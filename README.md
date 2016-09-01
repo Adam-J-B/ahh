@@ -8,7 +8,7 @@ within a couple days, but may still return  errors or do something unwanted.
 Basically don't hold me accountable if something goes wrong; go read the license!
 
 ## CONTAINS:
-vis.py - visualization functions:
+### vis.py - visualization functions:
     - plot: effortlessly make beautiful plots
         - supports up to two arrays,
         - extra y-axis available,
@@ -17,7 +17,7 @@ vis.py - visualization functions:
         - can limit x/y-axis
         - datetimes supported for x-axis
 
-sci.py - science functions:
+### sci.py - science functions:
     - get_uac: get the uncentered anomaly correlation of grid
     - get_cac: get the centered anomaly correlation of grid
     - get_rmse: get root mean square error of grid
@@ -30,7 +30,7 @@ sci.py - science functions:
         - All that in reverse
     - get_atavg: get the areal and time average
 
-ext.py - extra functions
+### ext.py - extra functions
     - eval: prints out a variable summary
         - prints out type of variable, length, shape
         - prints out type of unnested, unnested of unnested, and valid value
