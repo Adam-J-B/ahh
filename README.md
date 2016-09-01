@@ -9,9 +9,15 @@ Basically don't hold me accountable if something goes wrong; go read the license
 
 ## HOW TO USE:
     - Type "git clone https://github.com/ahuang11/ahh.git"
-    - go into ahh folder (where setup.py is)
+    - Go into ahh folder (where setup.py is)
     - Type "pip install -e ." (may need to be in bash first!)
     - In a Python script, type "from ahh import vis, sci, ext"
+
+### EXAMPLE USAGE:
+    - from ahh import vis
+    - x = [1,2,3,4]
+    - y = [5,6,7,8]
+    - vis.plot(x,y,show=True)
 
 ## CONTAINS:
 ### vis.py - visualization functions:
