@@ -7,6 +7,12 @@ DISCLAIMER: This repo is still in its infancy; I tried to debug as best I could
 within a couple days, but may still return  errors or do something unwanted.
 Basically don't hold me accountable if something goes wrong; go read the license!
 
+## HOW TO USE:
+    - Type "git clone https://github.com/ahuang11/ahh.git"
+    - go into ahh folder (where setup.py is)
+    - Type "pip install -e ." (may need to be in bash first!)
+    - In a Python script, type "from ahh import vis, sci, ext"
+
 ## CONTAINS:
 ### vis.py - visualization functions:
     - plot: effortlessly make beautiful plots
