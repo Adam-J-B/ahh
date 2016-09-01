@@ -7,7 +7,7 @@ DISCLAIMER: This repo is still in its infancy; I tried to debug as best I could
 within a couple days, but may still return  errors or do something unwanted.
 Basically don't hold me accountable if something goes wrong; go read the license!
 
-# CONTAINS:
+## CONTAINS:
 vis.py - visualization functions:
     - plot: effortlessly make beautiful plots
         - supports up to two arrays,
@@ -46,7 +46,7 @@ ext.py - extra functions
 
 Check individual packages' functions to read the docstrings; more details there...
 
-# TO-DO / UPCOMING:
+## TO-DO / UPCOMING:
 - Exception handling and display!
 - More in-depth documentation!
 - More conversions!
@@ -54,5 +54,5 @@ Check individual packages' functions to read the docstrings; more details there.
 - Fix the known issues listed below!
 - Plot world maps off netCDF4 files
 
-# KNOWN ISSUES:
+## KNOWN ISSUES:
 - In vis.py, plot's "minor" input is useable, but returns inconsistent font and color
