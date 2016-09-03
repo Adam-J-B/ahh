@@ -1,5 +1,5 @@
 ahh/__init__.py
-ahh/geo.py
+ahh/ext.py
 ahh/sci.py
 ahh/vis.py
 ahh.egg-info/PKG-INFO
