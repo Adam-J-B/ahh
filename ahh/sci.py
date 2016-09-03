@@ -1,7 +1,8 @@
+import numpy as np
+
 __author__ = 'huang.andrew12@gmail.com'
 __copyright__ = 'Andrew Huang'
 
-import numpy as np
 
 def get_uac(obs, fcst, clim):
     """
@@ -17,10 +18,11 @@ def get_uac(obs, fcst, clim):
     uac = np.zeros(len_arr)
 
     for i in range(len_arr):
-        fcst_prime = np.array(fcst[i,:,:] - clim)
-        obs_prime = np.array(obs[i,:,:] - clim)
+        fcst_prime = np.array(fcst[i, :, :] - clim)
+        obs_prime = np.array(obs[i, :, :] - clim)
         numerator = np.sum(fcst_prime * obs_prime)
-        denominator = np.sum(np.square(fcst_prime)) * np.sum(np.square(obs_prime))
+        denominator = np.sum(
+            np.square(fcst_prime)) * np.sum(np.square(obs_prime))
         uac[i] = numerator / np.sqrt(denominator)
 
     return uac
@@ -47,23 +49,29 @@ def get_cac(obs, fcst, clim, idc):
     lon_end_idc = idc[1][-1]
 
     for i in range(len_arr):
-        fcst_prime = np.array(fcst[i,lat_start_idc:lat_end_idc,lon_start_idc:lon_end_idc] -
-                        clim[lat_start_idc:lat_end_idc,lon_start_idc:lon_end_idc])
-        obs_prime = np.array(obs[i,lat_start_idc:lat_end_idc,lon_start_idc:lon_end_idc] -
-                        clim[lat_start_idc:lat_end_idc,lon_start_idc:lon_end_idc])
+        fcst_prime = np.array(
+            fcst[i, lat_start_idc:lat_end_idc, lon_start_idc:lon_end_idc] -
+            clim[lat_start_idc:lat_end_idc, lon_start_idc:lon_end_idc])
+        obs_prime = np.array(
+            obs[i, lat_start_idc:lat_end_idc, lon_start_idc:lon_end_idc] -
+            clim[lat_start_idc:lat_end_idc, lon_start_idc:lon_end_idc])
 
         fcst_prime_avg = np.average(
-                            np.array(fcst[i,lat_start_idc:lat_end_idc,lon_start_idc:lon_end_idc] -
-                                clim[lat_start_idc:lat_end_idc,lon_start_idc:lon_end_idc])
-                            )
+            np.array(
+                fcst[i, lat_start_idc:lat_end_idc, lon_start_idc:lon_end_idc] -
+                clim[lat_start_idc:lat_end_idc, lon_start_idc:lon_end_idc])
+            )
         obs_prime_avg = np.average(
-                            np.array(obs[i,lat_start_idc:lat_end_idc,lon_start_idc:lon_end_idc] -
-                                clim[lat_start_idc:lat_end_idc,lon_start_idc:lon_end_idc])
-                            )
+            np.array(
+                obs[i, lat_start_idc:lat_end_idc, lon_start_idc:lon_end_idc] -
+                clim[lat_start_idc:lat_end_idc, lon_start_idc:lon_end_idc])
+            )
 
-        numerator = np.sum((fcst_prime - fcst_prime_avg) * (obs_prime - obs_prime_avg))
-        denominator = np.sum(np.square(fcst_prime - fcst_prime_avg)) * np.sum(np.square(obs_prime - obs_prime_avg))
-        cac[i]= numerator / np.sqrt(denominator)
+        numerator = np.sum((
+            fcst_prime - fcst_prime_avg) * (obs_prime - obs_prime_avg))
+        denominator = np.sum(np.square(fcst_prime - fcst_prime_avg)) * \
+            np.sum(np.square(obs_prime - obs_prime_avg))
+        cac[i] = numerator / np.sqrt(denominator)
 
     return cac
 
@@ -90,18 +98,31 @@ def get_rmse(obs, fcst, idc):
 
     for i in range(len_arr):
         rmse[i] = np.sqrt(
-                    (1 / grid_points) * 
+                    (1 / grid_points) *
                     np.sum(
                         np.square(
-                            fcst[i,lat_start_idc:lat_end_idc,lon_start_idc:lon_end_idc] -
-                            obs[i,lat_start_idc:lat_end_idc,lon_start_idc:lon_end_idc]
+                            fcst[
+                                i,
+                                lat_start_idc:lat_end_idc,
+                                lon_start_idc:lon_end_idc] -
+                            obs[
+                                i,
+                                lat_start_idc:lat_end_idc,
+                                lon_start_idc:lon_end_idc]
                                 )
                             )
                         )
     return rmse
 
 
-def convert(variable, mm2in=True, c2f=True, c2k=True, f2k=True, mps2mph=True, reverse=True):
+def convert(variable,
+            mm2in=True,
+            c2f=True,
+            c2k=True,
+            f2k=True,
+            mps2mph=True,
+            reverse=True
+            ):
     """
     Converts the variable from one unit to another.
 
@@ -152,3 +173,17 @@ def get_atavg(data, time_idc, lats_idc, lons_idc):
     """
     spatial_time_avg = np.average(data[time_idc, lats_idc, lons_idc])
     return spatial_time_avg
+
+
+def get_norm_anom(data_avg):
+    """
+    Finds the normalized anomaly of some averaged data
+
+    :param: data_avg (np.array) - average data values
+    :return: data_anom (float) - normalized anomaly
+    """
+    data_std = np.std(data_avg)
+    data_clim = np.mean(data_avg)
+    data_anom = np.zeros_like(data_avg)
+    data_anom = (data_avg - data_clim) / data_std
+    return data_anom
