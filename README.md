@@ -66,21 +66,21 @@ Basically don't hold me accountable if something goes wrong; go read the license
 Check individual packages' functions to read the docstrings; more details there...
 
 ## CHANGELOG:
-    ### - v0.0.2
-        - Added new package: pre.py
-        - New functions pre.py: wget_fi() and concat_nc()
-        - Renamed ext.eval() to ext.ahh()
-        - Function ext.ahh() no longer has unnest=True as default
-        - Added "bare" input to ext.ahh
-        - Enhanced ext.read_nc() to include more options
-        - Enhanced vis.plot() to include exception handling notices
-        - Removed "name" input in vis.plot() and changed "save" input
-        - New function in vis.py: global_map
-        - New function in sci.py: get_norm_anom
-        - Aesthetic changes all over
-        - Complies with Flake8 and Codacy
-    ### - v0.0.1
-        - Creation of ahh with vis, sci, and ext packages.
+### - v0.0.2
+    - Added new package: pre.py
+    - New functions pre.py: wget_fi() and concat_nc()
+    - Renamed ext.eval() to ext.ahh()
+    - Function ext.ahh() no longer has unnest=True as default
+    - Added "bare" input to ext.ahh
+    - Enhanced ext.read_nc() to include more options
+    - Enhanced vis.plot() to include exception handling notices
+    - Removed "name" input in vis.plot() and changed "save" input
+    - New function in vis.py: global_map
+    - New function in sci.py: get_norm_anom
+    - Aesthetic changes all over
+    - Complies with Flake8 and Codacy
+### - v0.0.1
+    - Creation of ahh with vis, sci, and ext packages.
 
 ## TO-DO / UPCOMING:
 - Exception handling and display!
