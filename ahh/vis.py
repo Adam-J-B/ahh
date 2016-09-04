@@ -45,7 +45,8 @@ def plot(
          save=None,
          dates=False,
          major='days',
-         minor=None
+         minor=None,
+         interval=1,
          ):
     """
     Wrapper of matplotlib.pyplot. Makes a plot.
@@ -82,6 +83,7 @@ def plot(
     :param: dates (boolean) - indicates whether x axis are datetime objects
     :param: major (str) - time scale to put tick marks and label
     :param: minor (str) - time scale to put tick marks and label (buggy)
+    :param: interval (int) - intervals between tick marks
     :return: fig (matplotlib.figure) - plot figure
 
     Optional inputs requirements -
@@ -204,33 +206,34 @@ def plot(
 
         if dates:
             if major == 'years':
-                major = YearLocator()
+                major = YearLocator(interval=interval)
                 majorFmt = DateFormatter('%Y')
             elif major == 'months':
-                major = MonthLocator()
-                majorFmt = DateFormatter('%m')
+                major = MonthLocator(interval=interval)
+                majorFmt = DateFormatter('%m%Y')
             elif major == 'days':
-                major = DayLocator()
-                majorFmt = DateFormatter('%d')
+                major = DayLocator(interval=interval)
+                majorFmt = DateFormatter('%m/%d')
             elif major == 'hours':
-                major = HourLocator()
+                major = HourLocator(interval=interval)
                 majorFmt = DateFormatter('\n%H')
             if minor is not None:
                 if minor == 'years':
-                    minor = YearLocator()
+                    minor = YearLocator(interval=interval)
                     minorFmt = DateFormatter('\n%Y')
                 elif minor == 'months':
-                    minor = MonthLocator()
+                    minor = MonthLocator(interval=interval)
                     minorFmt = DateFormatter('\n%m')
                 elif minor == 'days':
-                    minor = DayLocator()
+                    minor = DayLocator(interval=interval)
                     minorFmt = DateFormatter('\n%d')
                 elif minor == 'hours':
-                    minor = HourLocator()
+                    minor = HourLocator(interval=interval)
                     minorFmt = DateFormatter('\n%H')
             for i in range(subplots):
-                ax[i].xaxis.set_major_locator(major)
-                ax[i].xaxis.set_major_formatter(majorFmt)
+                if major is not None:
+                    ax[i].xaxis.set_major_locator(major)
+                    ax[i].xaxis.set_major_formatter(majorFmt)
                 if minor is not None:
                     ax[i].xaxis.set_minor_locator(minor)
                     ax[i].xaxis.set_minor_formatter(minorFmt)
@@ -404,3 +407,28 @@ def global_map(
     if show:
         plt.show()
     return fig
+
+def prettify_plot(ax):
+    """
+    Input ax and get a pretty plot back!
+    
+    :param: ax (matplotlib.axes) - original axis
+    :return: ax (matplotlib.axes) - prettified axis
+    """
+    ax.spines["top"].set_visible(False)
+    ax.spines["bottom"].set_visible(False)
+    ax.spines["right"].set_visible(False)
+    ax.spines["left"].set_visible(False)
+    ax.get_xaxis().tick_bottom()
+    ax.get_yaxis().tick_left()
+    ax.xaxis.label.set_color('.4')
+    ax.yaxis.label.set_color('.4')
+    ax.tick_params(
+        axis='x', which='both', colors='.5', labelsize=12)
+    ax.tick_params(
+        axis='y', which='both', colors='.5', labelsize=12)
+    ax.yaxis.grid(
+        b=True, which='major', color='.55', linestyle='--')
+    ax.xaxis.grid(
+        b=True, which='major', color='.55', linestyle='--')
+    return ax

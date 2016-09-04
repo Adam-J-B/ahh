@@ -101,7 +101,35 @@ def ahh(variable,
         pass
 
 
-def get_idc(lats, lons, lower_lat, upper_lat, left_lon, right_lon):
+def lon360(lon, array=False):
+    """
+    Converts a west longitude to east longitude.
+
+    :param: lon (int) - a west longitude
+    :param: array (boolean) - indicator whether input is an array
+    :return: translated_lon (int) - translated longitude
+    """
+    if array:
+        translated_lon = np.array(lon)
+        west_lon_idc = np.where(translated_lon < 0)
+        translated_lon[west_lon_idc] += 360
+    else:
+        if lon < 0:
+            translated_lon = 360 + lon
+        else:
+            print('Input lon, {}, is already in east coordinates!'.format(lon))
+
+    return translated_lon
+
+
+def get_idc(lats,
+            lons,
+            lower_lat,
+            upper_lat,
+            left_lon,
+            right_lon,
+            maxmin=False,
+            w2e=False):
     """
     Finds the indices for given latitudes and longitudes boundary.
 
@@ -111,10 +139,20 @@ def get_idc(lats, lons, lower_lat, upper_lat, left_lon, right_lon):
     :param: upper_lat (float) - northern latitude boundary
     :param: left_lon (float) - western longitude boundary
     :param: right_lon (float) - eastern longitude boundary
+    :param: maxmin (boolean) - return only the max and min of lat/lon idc
+    :param: w2e (boolean) - convert west longitudes to east longitudes
     :return: lats_idc, lons_idc (np.array, np.array) - indices of lats/lons
+    :return: lat_start_idc, lat_end_idc, lon_start_idc, lon_end_idc -
+             (np.int64, np.int64, np.int64, np.int64)
+             the lowest and highest lat/lon indices
     """
     lats = np.array(lats)
     lons = np.array(lons)
+
+    if w2e:
+        left_lon = lon360(left_lon)
+        right_lon = lon360(right_lon)
+
     lats_idc = np.where(
                          (lats >= lower_lat)
                          &
@@ -125,7 +163,18 @@ def get_idc(lats, lons, lower_lat, upper_lat, left_lon, right_lon):
                          &
                          (lons <= right_lon)
                          )
+
+    if maxmin:
+        lats_idc = lats_idc[0].min(), lats_idc[0].max()
+        lons_idc = lons_idc[0].min(), lons_idc[0].max()
+        lat_start_idc = lats_idc[0]
+        lat_end_idc = lats_idc[1]
+        lon_start_idc = lons_idc[0]
+        lon_end_idc = lons_idc[1]
+        return lat_start_idc, lat_end_idc, lon_start_idc, lon_end_idc
+
     return lats_idc[0], lons_idc[0]
+
 
 
 def read_nc(file_path,
