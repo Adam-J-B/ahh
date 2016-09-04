@@ -9,7 +9,7 @@ __copyright__ = 'Andrew Huang'
 ### pre.py ###################################################################
 ##############################################################################
 
-def wget_fi(base_url, glob_str, user=None, pwd=None):
+def wget_fi(base_url, glob_str, user=None, pwd=None, directory=None):
     """
     Wrapper of wget; downloads files that matches the given glob_str. Can input
     username and password if authentication is required.
@@ -17,7 +17,8 @@ def wget_fi(base_url, glob_str, user=None, pwd=None):
     :param: base_url (str) - the dir of all the to be downloaded files
     :param: glob_str (str) - the naming pattern of the files
     :param: user (str) - username
-    :param: pwd (str) - pwd
+    :param: pwd (str) - password
+    :param: dir (str) - name of directory for files to be saved
     """
 
 
@@ -66,7 +67,24 @@ def ahh(variable,
     """
 
 
-def get_idc(lats, lons, lower_lat, upper_lat, left_lon, right_lon):
+def lon360(lon, array=False):
+    """
+    Converts a west longitude to east longitude.
+
+    :param: lon (int) - a west longitude
+    :param: array (boolean) - indicator whether input is an array
+    :return: translated_lon (int) - translated longitude
+    """
+
+
+def get_idc(lats,
+            lons,
+            lower_lat,
+            upper_lat,
+            left_lon,
+            right_lon,
+            maxmin=False,
+            w2e=False):
     """
     Finds the indices for given latitudes and longitudes boundary.
 
@@ -76,7 +94,12 @@ def get_idc(lats, lons, lower_lat, upper_lat, left_lon, right_lon):
     :param: upper_lat (float) - northern latitude boundary
     :param: left_lon (float) - western longitude boundary
     :param: right_lon (float) - eastern longitude boundary
+    :param: maxmin (boolean) - return only the max and min of lat/lon idc
+    :param: w2e (boolean) - convert west longitudes to east longitudes
     :return: lats_idc, lons_idc (np.array, np.array) - indices of lats/lons
+    :return: lat_start_idc, lat_end_idc, lon_start_idc, lon_end_idc -
+             (np.int64, np.int64, np.int64, np.int64)
+             the lowest and highest lat/lon indices
     """
 
 
@@ -194,7 +217,6 @@ def get_norm_anom(data_avg):
     :return: data_anom (float) - normalized anomaly
     """
 
-
 ##############################################################################
 ### vis.py ###################################################################
 ##############################################################################
@@ -229,7 +251,8 @@ def plot(
          save=None,
          dates=False,
          major='days',
-         minor=None
+         minor=None,
+         interval=1,
          ):
     """
     Wrapper of matplotlib.pyplot. Makes a plot.
@@ -266,6 +289,7 @@ def plot(
     :param: dates (boolean) - indicates whether x axis are datetime objects
     :param: major (str) - time scale to put tick marks and label
     :param: minor (str) - time scale to put tick marks and label (buggy)
+    :param: interval (int) - intervals between tick marks
     :return: fig (matplotlib.figure) - plot figure
 
     Optional inputs requirements -
@@ -301,3 +325,29 @@ def global_map(
     :param: center (int) - longitude where map will be centered
     :return: fig (matplotlib.figure) - map figure
     """
+
+
+def prettify_plot(ax):
+    """
+    Input ax and get a pretty plot back!
+    
+    :param: ax (matplotlib.axes) - original axis
+    :return: ax (matplotlib.axes) - prettified axis
+    """
+    ax.spines["top"].set_visible(False)
+    ax.spines["bottom"].set_visible(False)
+    ax.spines["right"].set_visible(False)
+    ax.spines["left"].set_visible(False)
+    ax.get_xaxis().tick_bottom()
+    ax.get_yaxis().tick_left()
+    ax.xaxis.label.set_color('.4')
+    ax.yaxis.label.set_color('.4')
+    ax.tick_params(
+        axis='x', which='both', colors='.5', labelsize=12)
+    ax.tick_params(
+        axis='y', which='both', colors='.5', labelsize=12)
+    ax.yaxis.grid(
+        b=True, which='major', color='.55', linestyle='--')
+    ax.xaxis.grid(
+        b=True, which='major', color='.55', linestyle='--')
+    return ax

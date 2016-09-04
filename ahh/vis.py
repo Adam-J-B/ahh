@@ -252,22 +252,7 @@ def plot(
 
         # Apply some prettifying
         for i in range(subplots):
-            ax[i].spines["top"].set_visible(False)
-            ax[i].spines["bottom"].set_visible(False)
-            ax[i].spines["right"].set_visible(False)
-            ax[i].spines["left"].set_visible(False)
-            ax[i].get_xaxis().tick_bottom()
-            ax[i].get_yaxis().tick_left()
-            ax[i].xaxis.label.set_color('.4')
-            ax[i].yaxis.label.set_color('.4')
-            ax[i].tick_params(
-                axis='x', which='both', colors='.5', labelsize=12)
-            ax[i].tick_params(
-                axis='y', which='both', colors='.5', labelsize=12)
-            ax[i].yaxis.grid(
-                b=True, which='major', color='.55', linestyle='--')
-            ax[i].xaxis.grid(
-                b=True, which='major', color='.55', linestyle='--')
+            prettify_plot(ax[i])
 
     elif subplots == 1:
         fig, ax = plt.subplots(figsize=(21, 13))
@@ -317,12 +302,17 @@ def plot(
             print('No ylabel found, defaulting to "y"')
             ylabel = 'y'
         ax.set_title(title, fontsize=21, y=1.03, color='.50')
+        ax.set_xlabel(xlabel, fontsize=16.5)
+        ax.set_ylabel(ylabel, fontsize=16.5)
 
         if extra:
             if extray:
                 ax2 = ax.twinx()
                 ax2.plot(x, y2, color2)
-                ax2.set_ylabel(ylabel2)
+                if ylabel2 is None:
+                    print('No ylabel2 found, defaulting to "y2"')
+                    ylabel2 = 'y2'
+                ax2.set_ylabel(ylabel2, fontsize=16.5)
                 if ylim_high is not None and ylim_low is not None:
                     ax2.set_ylim(ylim2_low, ylim2_high)
                 if xlim_high is not None and xlim_low is not None:
@@ -339,15 +329,7 @@ def plot(
                 ax.plot(x, y2, color2)
 
         # Prettify it!
-        ax.spines["top"].set_visible(False)
-        ax.spines["bottom"].set_visible(False)
-        ax.spines["right"].set_visible(False)
-        ax.spines["left"].set_visible(False)
-        ax.get_xaxis().tick_bottom()
-        ax.get_yaxis().tick_left()
-        ax.xaxis.label.set_color('.4')
-        ax.tick_params(axis='x', colors='.5')
-        ax.xaxis.grid(b=True, which='major', color='.55', linestyle='--')
+        prettify_plot(ax)
         if extray:
             ax.yaxis.label.set_color(color)
             ax.tick_params(axis='y', colors=color)
