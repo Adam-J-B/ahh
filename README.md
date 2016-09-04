@@ -95,4 +95,4 @@ Check individual packages' functions to read the docstrings; more details there.
 ## KNOWN ISSUES:
 - vis.plot() "minor" input is useable, but returns inconsistent font and color
 - ext.ahh() "unnest" still needs major improvement.
-- locate_valid_start() needs major revmap.
+- locate_valid_start() needs major revamp.
