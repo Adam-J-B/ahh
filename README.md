@@ -65,6 +65,7 @@ Basically don't hold me accountable if something goes wrong; go read the license
         - datetimes supported for x-axis
 
 Check individual packages' functions to read the docstrings; more details there...
+Or read all the docstrings here: https://github.com/ahuang11/ahh/blob/develop/docstrings.py
 
 ## CHANGELOG:
 ### - v0.0.3
@@ -98,6 +99,6 @@ Check individual packages' functions to read the docstrings; more details there.
 - Fix the known issues listed below!
 
 ## KNOWN ISSUES:
-- vis.plot() "minor" input is useable, but returns inconsistent font and color
+- vis.plot() "minor" input is useable, but returns inconsistent font and color.
 - ext.ahh() "unnest" still needs major improvement.
 - ext.locate_valid_start() needs major revamp.
