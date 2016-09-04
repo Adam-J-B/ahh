@@ -45,7 +45,8 @@ def plot(
          save=None,
          dates=False,
          major='days',
-         minor=None
+         minor=None,
+         interval=1,
          ):
     """
     Wrapper of matplotlib.pyplot. Makes a plot.
@@ -82,6 +83,7 @@ def plot(
     :param: dates (boolean) - indicates whether x axis are datetime objects
     :param: major (str) - time scale to put tick marks and label
     :param: minor (str) - time scale to put tick marks and label (buggy)
+    :param: interval (int) - intervals between tick marks
     :return: fig (matplotlib.figure) - plot figure
 
     Optional inputs requirements -
@@ -204,33 +206,34 @@ def plot(
 
         if dates:
             if major == 'years':
-                major = YearLocator()
+                major = YearLocator(interval=interval)
                 majorFmt = DateFormatter('%Y')
             elif major == 'months':
-                major = MonthLocator()
-                majorFmt = DateFormatter('%m')
+                major = MonthLocator(interval=interval)
+                majorFmt = DateFormatter('%m%Y')
             elif major == 'days':
-                major = DayLocator()
-                majorFmt = DateFormatter('%d')
+                major = DayLocator(interval=interval)
+                majorFmt = DateFormatter('%m/%d')
             elif major == 'hours':
-                major = HourLocator()
+                major = HourLocator(interval=interval)
                 majorFmt = DateFormatter('\n%H')
             if minor is not None:
                 if minor == 'years':
-                    minor = YearLocator()
+                    minor = YearLocator(interval=interval)
                     minorFmt = DateFormatter('\n%Y')
                 elif minor == 'months':
-                    minor = MonthLocator()
+                    minor = MonthLocator(interval=interval)
                     minorFmt = DateFormatter('\n%m')
                 elif minor == 'days':
-                    minor = DayLocator()
+                    minor = DayLocator(interval=interval)
                     minorFmt = DateFormatter('\n%d')
                 elif minor == 'hours':
-                    minor = HourLocator()
+                    minor = HourLocator(interval=interval)
                     minorFmt = DateFormatter('\n%H')
             for i in range(subplots):
-                ax[i].xaxis.set_major_locator(major)
-                ax[i].xaxis.set_major_formatter(majorFmt)
+                if major is not None:
+                    ax[i].xaxis.set_major_locator(major)
+                    ax[i].xaxis.set_major_formatter(majorFmt)
                 if minor is not None:
                     ax[i].xaxis.set_minor_locator(minor)
                     ax[i].xaxis.set_minor_formatter(minorFmt)
@@ -249,22 +252,7 @@ def plot(
 
         # Apply some prettifying
         for i in range(subplots):
-            ax[i].spines["top"].set_visible(False)
-            ax[i].spines["bottom"].set_visible(False)
-            ax[i].spines["right"].set_visible(False)
-            ax[i].spines["left"].set_visible(False)
-            ax[i].get_xaxis().tick_bottom()
-            ax[i].get_yaxis().tick_left()
-            ax[i].xaxis.label.set_color('.4')
-            ax[i].yaxis.label.set_color('.4')
-            ax[i].tick_params(
-                axis='x', which='both', colors='.5', labelsize=12)
-            ax[i].tick_params(
-                axis='y', which='both', colors='.5', labelsize=12)
-            ax[i].yaxis.grid(
-                b=True, which='major', color='.55', linestyle='--')
-            ax[i].xaxis.grid(
-                b=True, which='major', color='.55', linestyle='--')
+            prettify_plot(ax[i])
 
     elif subplots == 1:
         fig, ax = plt.subplots(figsize=(21, 13))
@@ -314,12 +302,17 @@ def plot(
             print('No ylabel found, defaulting to "y"')
             ylabel = 'y'
         ax.set_title(title, fontsize=21, y=1.03, color='.50')
+        ax.set_xlabel(xlabel, fontsize=16.5)
+        ax.set_ylabel(ylabel, fontsize=16.5)
 
         if extra:
             if extray:
                 ax2 = ax.twinx()
                 ax2.plot(x, y2, color2)
-                ax2.set_ylabel(ylabel2)
+                if ylabel2 is None:
+                    print('No ylabel2 found, defaulting to "y2"')
+                    ylabel2 = 'y2'
+                ax2.set_ylabel(ylabel2, fontsize=16.5)
                 if ylim_high is not None and ylim_low is not None:
                     ax2.set_ylim(ylim2_low, ylim2_high)
                 if xlim_high is not None and xlim_low is not None:
@@ -336,15 +329,7 @@ def plot(
                 ax.plot(x, y2, color2)
 
         # Prettify it!
-        ax.spines["top"].set_visible(False)
-        ax.spines["bottom"].set_visible(False)
-        ax.spines["right"].set_visible(False)
-        ax.spines["left"].set_visible(False)
-        ax.get_xaxis().tick_bottom()
-        ax.get_yaxis().tick_left()
-        ax.xaxis.label.set_color('.4')
-        ax.tick_params(axis='x', colors='.5')
-        ax.xaxis.grid(b=True, which='major', color='.55', linestyle='--')
+        prettify_plot(ax)
         if extray:
             ax.yaxis.label.set_color(color)
             ax.tick_params(axis='y', colors=color)
@@ -404,3 +389,28 @@ def global_map(
     if show:
         plt.show()
     return fig
+
+def prettify_plot(ax):
+    """
+    Input ax and get a pretty plot back!
+    
+    :param: ax (matplotlib.axes) - original axis
+    :return: ax (matplotlib.axes) - prettified axis
+    """
+    ax.spines["top"].set_visible(False)
+    ax.spines["bottom"].set_visible(False)
+    ax.spines["right"].set_visible(False)
+    ax.spines["left"].set_visible(False)
+    ax.get_xaxis().tick_bottom()
+    ax.get_yaxis().tick_left()
+    ax.xaxis.label.set_color('.4')
+    ax.yaxis.label.set_color('.4')
+    ax.tick_params(
+        axis='x', which='both', colors='.5', labelsize=12)
+    ax.tick_params(
+        axis='y', which='both', colors='.5', labelsize=12)
+    ax.yaxis.grid(
+        b=True, which='major', color='.55', linestyle='--')
+    ax.xaxis.grid(
+        b=True, which='major', color='.55', linestyle='--')
+    return ax

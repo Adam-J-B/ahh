@@ -5,7 +5,7 @@ __author__ = 'huang.andrew12@gmail.com'
 __copyright__ = 'Andrew Huang'
 
 
-def wget_fi(base_url, glob_str, user=None, pwd=None):
+def wget_fi(base_url, glob_str, user=None, pwd=None, directory=None):
     """
     Wrapper of wget; downloads files that matches the given glob_str. Can input
     username and password if authentication is required.
@@ -13,7 +13,8 @@ def wget_fi(base_url, glob_str, user=None, pwd=None):
     :param: base_url (str) - the dir of all the to be downloaded files
     :param: glob_str (str) - the naming pattern of the files
     :param: user (str) - username
-    :param: pwd (str) - pwd
+    :param: pwd (str) - password
+    :param: dir (str) - name of directory for files to be saved
     """
     fi_dir = os.path.join(base_url, glob_str)
     if user is not None and pwd is not None:
@@ -24,6 +25,9 @@ def wget_fi(base_url, glob_str, user=None, pwd=None):
     else:
         wget_cmd = """wget -r -np -nd --glob=on '{fi_dir}'""" \
             .format(fi_dir=fi_dir)
+    if directory is not None:
+        add_on_cmd = """ -P {}""".format(directory)
+        wget_cmd += add_on_cmd
     os.system(wget_cmd)
 
 
