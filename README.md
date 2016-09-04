@@ -25,6 +25,7 @@ Basically don't hold me accountable if something goes wrong; go read the license
 ### pre.py - pre-analysis fucnctions
     - wget_fi: downloads multiple files with a common pattern name
         - option to put in username and password
+        - option to select directory for files to be downloaded in
     - concat_nc: combines multiple netCDF4 files with a common pattern name
         - capability to append/reference record dimension properly
 
@@ -51,6 +52,7 @@ Basically don't hold me accountable if something goes wrong; go read the license
         - control the length of output/how many values get printed out
         - supports unnesting arrays
         - control the rows and columns unnested
+    - lon360: converts west longitudes to east longitudes
     - get_idc: get the indices for bounding latitudes and longitudes
     - read_nc: read netCDF4 file
         - grabs the opened dataset, time, latitude, and longitude arrays
@@ -64,12 +66,21 @@ Basically don't hold me accountable if something goes wrong; go read the license
         - can share x/y-axis,
         - can limit x/y-axis
         - datetimes supported for x-axis
+    - global_map: map out data
+    - prettify_plot: effortlessly make your own plot pretty
 
 ## CHANGELOG:
+### - v0.0.4
+    - Added ext.lon360() which converts west longitudes to east
+    - Added "maxmin" and "w2e" inputs to ext.get_idc()
+    - Added "directory" input to pre.wget_fi()
+    - Added "interval" input to vis.plot()
+    - Fixed bug where xlabel and ylabel wasn't set for single plot
 ### - v0.0.3
     - Added easily accessible docstrings.py for easier referencing
     - Linked the docstrings.py in README.md
     - Reorganized README.md for better logical progression
+    - Added requirements to setup.py
 ### - v0.0.2
     - Added new package: pre.py
     - New functions pre.py: wget_fi() and concat_nc()
