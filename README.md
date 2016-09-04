@@ -2,6 +2,7 @@
 Found a bug? Contact me at huang dot andrew12 at gmail dot com!
 
 Functions that I can easily reference, and maybe you too!
+Docstrings here: https://github.com/ahuang11/ahh/blob/master/docstrings.py
 
 DISCLAIMER: This repo is still in its infancy; I tried to debug as best I could
 within a couple days, but may still return  errors or do something unwanted.
@@ -63,9 +64,6 @@ Basically don't hold me accountable if something goes wrong; go read the license
         - can share x/y-axis,
         - can limit x/y-axis
         - datetimes supported for x-axis
-
-Check individual packages' functions to read the docstrings; more details there...
-Or read all the docstrings here: https://github.com/ahuang11/ahh/blob/develop/docstrings.py
 
 ## CHANGELOG:
 ### - v0.0.3
