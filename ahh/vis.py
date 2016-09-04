@@ -1,42 +1,52 @@
+import matplotlib.pyplot as plt
+from matplotlib.dates import YearLocator, MonthLocator, DayLocator,\
+                             HourLocator, DateFormatter
+from mpl_toolkits.basemap import Basemap
+
 __author__ = 'huang.andrew12@gmail.com'
 __copyright__ = 'Andrew Huang'
 
-import matplotlib.pyplot as plt
-from matplotlib.dates import YearLocator, MonthLocator, DayLocator, HourLocator, DateFormatter
+
+class MissingInput(Exception):
+    pass
+
+
+class Unsupported(Exception):
+    pass
+
 
 def plot(
-        x,
-        y,
-        x2=None,
-        y2=None,
-        subplots=1,
-        title='Plot',
-        title2=None,
-        xlabel='x',
-        ylabel='y',
-        xlabel2=None,
-        ylabel2=None,
-        xlim_high=None,
-        ylim_high=None,
-        xlim2_high=None,
-        ylim2_high=None,
-        xlim_low=None,
-        ylim_low=None,
-        xlim2_low=None,
-        ylim2_low=None,
-        color='#ce5f5f',
-        color2='#66A7C5',
-        sharex=False,
-        sharey=False,
-        extra=False,
-        extray=False,
-        show=False,
-        save=False,
-        name='plot.png',
-        dates=False,
-        major='days',
-        minor=None
-        ):
+         x,
+         y,
+         x2=None,
+         y2=None,
+         subplots=1,
+         title='Plot',
+         title2=None,
+         xlabel=None,
+         ylabel=None,
+         xlabel2=None,
+         ylabel2=None,
+         xlim_low=None,
+         ylim_low=None,
+         xlim2_low=None,
+         ylim2_low=None,
+         xlim_high=None,
+         ylim_high=None,
+         xlim2_high=None,
+         ylim2_high=None,
+         color='#ce5f5f',
+         color2='#66A7C5',
+         sharex=False,
+         sharey=False,
+         extra=False,
+         extray=False,
+         show=False,
+         save=None,
+         dates=False,
+         major='days',
+         minor=None
+         ):
     """
     Wrapper of matplotlib.pyplot. Makes a plot.
     Only two inputs are required: x and y.
@@ -53,6 +63,10 @@ def plot(
     :param: ylabel (str) - main y axis label
     :param: xlabel2 (str) - secondary x axis label
     :param: ylabel2 (str) - secondary y axis label
+    :param: xlim_low (int/float) - main x axis lower limit
+    :param: ylim_low (int/float) - main y axis lower limit
+    :param: xlim2_low (int/float) - secondary x axis lower limit
+    :param: ylim2_low (int/float) - secondary y axis lower limit
     :param: xlim_high (int/float) - main x axis upper limit
     :param: ylim_high (int/float) - main y axis upper limit
     :param: xlim2_high (int/float) - secondary x axis upper limit
@@ -64,36 +78,60 @@ def plot(
     :param: extra (boolean) - plot y2 on same plot
     :param: extray (boolean) - plot y2 on secondary axis
     :param: show (boolean) - shows plot
-    :param: save (boolean) - saves plot
-    :param: name (str) - name of output file
+    :param: save (str) - name of output plot
     :param: dates (boolean) - indicates whether x axis are datetime objects
     :param: major (str) - time scale to put tick marks and label
-    :param: minor (str) - time scale to put tick marks and label (needs more work)
+    :param: minor (str) - time scale to put tick marks and label (buggy)
     :return: fig (matplotlib.figure) - plot figure
 
-    Optional inputs requirements - 
+    Optional inputs requirements -
     subplots: x2 (if not sharex), y2 (if not sharey)
     ylim_high: ylim_low (vice-versa)
     xlim_high: xlim_low (vice-versa)
     extra: y2
     extray: extra=True
-    save: name
     dates: x=arr. of [datetime.datetime] or x2=arr of [datetime.datetime]
     """
+    if subplots == 2 and x2 is None and sharex is False:
+        print('\nMissing input "x2" to create second plot!\n')
+        raise(MissingInput)
+    if subplots == 2 and y2 is None and sharey is False:
+        print('\nMissing input "y2" to create second plot!\n')
+        raise(MissingInput)
+    if ylim_high is not None and ylim_low is None:
+        print('\nMissing input "ylim_low" to set upper y limit!\n')
+        raise(MissingInput)
+    if ylim_low is not None and ylim_high is None:
+        print('\nMissing input "ylim_high" to set lower y limit!\n')
+        raise(MissingInput)
+    if ylim2_high is not None and ylim2_low is None:
+        print('\nMissing input "ylim2_low" to set secondary upper y limit!\n')
+        raise(MissingInput)
+    if ylim2_low is not None and ylim2_high is None:
+        print('\nMissing input "ylim2_high" to set secondary lower y limit!\n')
+        raise(MissingInput)
+    if extra and y2 is None:
+        print('\nMissing a "y2" to use "extra" input!\n')
+        raise(MissingInput)
+    if extray and extra is False:
+        print(
+            'Input "extra" was not set with "extray",\
+             automatically setting extra = True')
+        extra = True
     if subplots > 1:
         if sharey:
             fig, ax = plt.subplots(
                           1, subplots,
                           sharex=sharex,
                           sharey=sharey,
-                          figsize=(20,15)
+                          figsize=(20, 15)
                           )
         else:
             fig, ax = plt.subplots(
                           subplots,
                           sharex=sharex,
                           sharey=sharey,
-                          figsize=(20,15)
+                          figsize=(20, 15)
                           )
         if dates:
             ax[0].plot_date(x, y, color)
@@ -103,35 +141,63 @@ def plot(
         # Here's some logic to reduce redundancy
         if sharex:
             if xlabel is None:
-                xlabel = xlabel2
+                if xlabel2 is not None:
+                    xlabel = xlabel2
+                else:
+                    print('No xlabel found, defaulting to "x"')
+                    xlabel = 'x'
             elif xlabel2 is None:
-                xlabel2 = xlabel
-            ax[0].set_ylabel(ylabel, fontsize=16)
+                if xlabel is not None:
+                    xlabel2 = xlabel
+                else:
+                    print('No xlabel2 found, defaulting to "x2"')
+                    xlabel2 = 'x2'
+            ax[0].set_ylabel(ylabel, fontsize=16.5)
             if dates:
                 ax[1].plot_date(x, y2, color2)
             else:
                 ax[1].plot(x, y2, color2)
-            ax[1].set_ylabel(ylabel2, fontsize=16)
+            ax[1].set_ylabel(ylabel2, fontsize=16.5)
         elif sharey:
             if ylabel is None:
-                ylabel = ylabel2
+                if ylabel2 is not None:
+                    ylabel = ylabel2
+                else:
+                    print('No ylabel found, defaulting to "y"')
+                    ylabel = 'y'
             elif ylabel2 is None:
-                ylabel2 = ylabel
-            ax[0].set_xlabel(xlabel, fontsize=16)
-            ax[0].set_ylabel(ylabel, fontsize=16)
+                if ylabel is not None:
+                    ylabel2 = ylabel
+                else:
+                    print('No ylabel2 found, defaulting to "y2"')
+                    ylabel2 = 'y2'
+            ax[0].set_xlabel(xlabel, fontsize=16.5)
+            ax[0].set_ylabel(ylabel, fontsize=16.5)
             if dates:
                 ax[1].plot_date(x2, y, color2)
             else:
                 ax[1].plot(x2, y, color2)
         else:
-            ax[0].set_xlabel(xlabel, fontsize=16)
-            ax[0].set_ylabel(ylabel, fontsize=16)
+            if xlabel is None:
+                print('No xlabel found, defaulting to "x"')
+                xlabel = 'x'
+            if xlabel2 is None:
+                print('No xlabel2 found, defaulting to "x2"')
+                xlabel2 = 'x2'
+            if ylabel is None:
+                print('No ylabel found, defaulting to "y"')
+                ylabel = 'y'
+            if ylabel2 is None:
+                print('No ylabel2 found, defaulting to "y2"')
+                ylabel2 = 'y2'
+            ax[0].set_xlabel(xlabel, fontsize=16.5)
+            ax[0].set_ylabel(ylabel, fontsize=16.5)
             if dates:
                 ax[1].plot_date(x2, y2, color2)
             else:
                 ax[1].plot(x2, y2, color2)
-            ax[1].set_ylabel(ylabel2, fontsize=16)
-        ax[1].set_xlabel(xlabel2, fontsize=16)
+            ax[1].set_ylabel(ylabel2, fontsize=16.5)
+        ax[1].set_xlabel(xlabel2, fontsize=16.5)
         ax[0].set_title(title, fontsize=23, y=1.03, color='.50')
         if title2 is not None:
             ax[1].set_title(title2, fontsize=23, y=1.03, color='.50')
@@ -162,7 +228,7 @@ def plot(
                 elif minor == 'hours':
                     minor = HourLocator()
                     minorFmt = DateFormatter('\n%H')
-            for i in range(subplots):            
+            for i in range(subplots):
                 ax[i].xaxis.set_major_locator(major)
                 ax[i].xaxis.set_major_formatter(majorFmt)
                 if minor is not None:
@@ -191,13 +257,17 @@ def plot(
             ax[i].get_yaxis().tick_left()
             ax[i].xaxis.label.set_color('.4')
             ax[i].yaxis.label.set_color('.4')
-            ax[i].tick_params(axis='x', which='both', colors='.5')
-            ax[i].tick_params(axis='y', which='both', colors='.5')
-            ax[i].yaxis.grid(b=True, which='major', color='.55', linestyle='--')
-            ax[i].xaxis.grid(b=True, which='major', color='.5', linestyle='-')
+            ax[i].tick_params(
+                axis='x', which='both', colors='.5', labelsize=12)
+            ax[i].tick_params(
+                axis='y', which='both', colors='.5', labelsize=12)
+            ax[i].yaxis.grid(
+                b=True, which='major', color='.55', linestyle='--')
+            ax[i].xaxis.grid(
+                b=True, which='major', color='.55', linestyle='--')
 
     elif subplots == 1:
-        fig, ax = plt.subplots(figsize=(21,13))
+        fig, ax = plt.subplots(figsize=(21, 13))
         if dates:
             ax.plot_date(x, y, color)
             if major == 'years':
@@ -217,7 +287,7 @@ def plot(
                     minor = YearLocator()
                     minorFmt = DateFormatter('\n%Y')
                 elif minor == 'months':
-                    minor = MonthLocator(e)
+                    minor = MonthLocator()
                     minorFmt = DateFormatter('\n%m')
                 elif minor == 'days':
                     minor = DayLocator()
@@ -237,8 +307,12 @@ def plot(
             ax.set_ylim(ylim_low, ylim_high)
         if xlim_high is not None and xlim_low is not None:
             ax.set_xlim(xlim_low, xlim_high)
-        ax.set_xlabel(xlabel)
-        ax.set_ylabel(ylabel)
+        if xlabel is None:
+            print('No xlabel found, defaulting to "x"')
+            xlabel = 'x'
+        if ylabel is None:
+            print('No ylabel found, defaulting to "y"')
+            ylabel = 'y'
         ax.set_title(title, fontsize=21, y=1.03, color='.50')
 
         if extra:
@@ -270,23 +344,63 @@ def plot(
         ax.get_yaxis().tick_left()
         ax.xaxis.label.set_color('.4')
         ax.tick_params(axis='x', colors='.5')
-        ax.xaxis.grid(b=True, which='major', color='.5', linestyle='-')
+        ax.xaxis.grid(b=True, which='major', color='.55', linestyle='--')
         if extray:
             ax.yaxis.label.set_color(color)
             ax.tick_params(axis='y', colors=color)
             ax.yaxis.grid(b=True, which='major', color=color, linestyle='--')
         else:
             ax.yaxis.label.set_color('.4')
-            ax.tick_params(axis='x', colors='.5')
+            ax.tick_params(axis='y', colors='.5')
             ax.yaxis.grid(b=True, which='major', color='.55', linestyle='--')
 
     else:
-        raise('Sorry, this function only supports two subplots!')
+        print('Sorry, this function only supports two subplots\n!')
+        raise(Unsupported)
 
-    if save:
-        fig.savefig(name)
+    if save is not None:
+        fig.savefig(save)
 
     if show:
         fig.show()
 
+    return fig
+
+
+def global_map(
+              data, lat, lon, vmin, vmax,
+              title='Map',
+              show=False,
+              save=None,
+              proj='cyl',
+              center=16.50
+              ):
+    """
+    Wrapper of mpl_toolkits.basemap. Makes a map.
+
+    :param: data (np.array) - data to be mapped
+    :param: lat (np.array) - array of latitudes
+    :param: lon (np.array) - array of longitudes
+    :param: vmin (int) - lower limit of color bar
+    :param: vmax (int) - upper limit of color bar
+    :param: title (str) - main title
+    :param: show (boolean) - shows plot
+    :param: save (str) - name of output file
+    :param: proj ('str') - abbrieviation of projection
+    :param: center (int) - longitude where map will be centered
+    :return: fig (matplotlib.figure) - map figure
+    """
+    fig = plt.figure(figsize=(20, 15))
+    tmp_m = Basemap(projection=proj, lon_0=center)
+    tmp_m.drawcoastlines(linewidth=1.25, color="gray")
+    tmp_m.drawparallels(range(-80, 81, 20), labels=[1, 1, 0, 0])
+    tmp_m.drawmeridians(range(-180, 180, 60), labels=[0, 0, 0, 1])
+    im = tmp_m.pcolormesh(
+        lon, lat, data, cmap=plt.cm.jet, vmin=vmin, vmax=vmax)
+    tmp_m.colorbar(im, "bottom", size="5%", pad="10%")
+    plt.title("{}".format(title))
+    if save is not None:
+        plt.savefig("{}".format(save), bbox_inches='tight')
+    if show:
+        plt.show()
     return fig
