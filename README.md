@@ -14,7 +14,7 @@ Basically don't hold me accountable if something goes wrong; go read the license
     - Type "pip install -e ." (may need to be in bash first!)
     - In a Python script, type "from ahh import vis, sci, ext"
 
-### example usage:
+### example.py - example usage:
     from ahh import vis
     x = [1, 2, 3, 4]
     y = [5, 6, 7, 8]
@@ -22,7 +22,7 @@ Basically don't hold me accountable if something goes wrong; go read the license
 
 ## CONTAINS:
 
-### pre.py - pre-analysis fucnctions
+### pre.py - pre-analysis fucnctions:
     - wget_fi: downloads multiple files with a common pattern name
         - option to put in username and password
         - option to select directory for files to be downloaded in
@@ -43,7 +43,7 @@ Basically don't hold me accountable if something goes wrong; go read the license
     - get_atavg: get the areal and time average
     - get_norm_anom: get the normalized anomaly of array
 
-### ext.py - extra functions
+### ext.py - extra functions:
     - ahh: prints out a variable summary
         - prints out type of variable, length, shape
         - prints out type of unnested, unnested of unnested, and valid value
