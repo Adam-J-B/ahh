@@ -2,6 +2,7 @@
 Found a bug? Contact me at huang dot andrew12 at gmail dot com!
 
 Functions that I can easily reference, and maybe you too!
+Docstrings here: https://github.com/ahuang11/ahh/blob/master/docstrings.py
 
 DISCLAIMER: This repo is still in its infancy; I tried to debug as best I could
 within a couple days, but may still return  errors or do something unwanted.
@@ -15,19 +16,17 @@ Basically don't hold me accountable if something goes wrong; go read the license
 
 ### example usage:
     from ahh import vis
-    x = [1,2,3,4]
-    y = [5,6,7,8]
-    vis.plot(x,y,show=True)
+    x = [1, 2, 3, 4]
+    y = [5, 6, 7, 8]
+    vis.plot(x, y, show=True)
 
 ## CONTAINS:
-### vis.py - visualization functions:
-    - plot: effortlessly make beautiful plots
-        - supports up to two arrays,
-        - extra y-axis available,
-        - up to two subplots,
-        - can share x/y-axis,
-        - can limit x/y-axis
-        - datetimes supported for x-axis
+
+### pre.py - pre-analysis fucnctions
+    - wget_fi: downloads multiple files with a common pattern name
+        - option to put in username and password
+    - concat_nc: combines multiple netCDF4 files with a common pattern name
+        - capability to append/reference record dimension properly
 
 ### sci.py - science functions:
     - get_uac: get the uncentered anomaly correlation of grid
@@ -57,15 +56,20 @@ Basically don't hold me accountable if something goes wrong; go read the license
         - grabs the opened dataset, time, latitude, and longitude arrays
     - locate_valid_start: finds the first row and column that isn't zero or masked
 
-### pre.py - pre-analysis fucnctions
-    - wget_fi: downloads multiple files with a common pattern name
-        - option to put in username and password
-    - concat_nc: combines multiple netCDF4 files with a common pattern name
-        - capability to append/reference record dimension properly
-
-Check individual packages' functions to read the docstrings; more details there...
+### vis.py - visualization functions:
+    - plot: effortlessly make beautiful plots
+        - supports up to two arrays,
+        - extra y-axis available,
+        - up to two subplots,
+        - can share x/y-axis,
+        - can limit x/y-axis
+        - datetimes supported for x-axis
 
 ## CHANGELOG:
+### - v0.0.3
+    - Added easily accessible docstrings.py for easier referencing
+    - Linked the docstrings.py in README.md
+    - Reorganized README.md for better logical progression
 ### - v0.0.2
     - Added new package: pre.py
     - New functions pre.py: wget_fi() and concat_nc()
@@ -93,6 +97,6 @@ Check individual packages' functions to read the docstrings; more details there.
 - Fix the known issues listed below!
 
 ## KNOWN ISSUES:
-- vis.plot() "minor" input is useable, but returns inconsistent font and color
+- vis.plot() "minor" input is useable, but returns inconsistent font and color.
 - ext.ahh() "unnest" still needs major improvement.
-- locate_valid_start() needs major revamp.
+- ext.locate_valid_start() needs major revamp.
