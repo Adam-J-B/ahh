@@ -82,7 +82,7 @@ def get_idc(lats,
             right_lon,
             maxmin=False,
             w2e=False,
-            e2w=True):
+            e2w=False):
     """
     Finds the indices for given latitudes and longitudes boundary.
 
