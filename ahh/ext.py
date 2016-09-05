@@ -57,7 +57,8 @@ def lonw2e(lon, array=False, reverse=False):
             if lon < 0:
                 translated_lon = 360 + lon
             else:
-                print('Input lon, {}, is already in east coordinates!'.format(lon))
+                print('Input lon, {}, is already in east coordinates!'
+                      .format(lon))
     else:
         if array:
             translated_lon = np.array(lon)
@@ -67,10 +68,10 @@ def lonw2e(lon, array=False, reverse=False):
             if lon > 180:
                 translated_lon = lon - 360
             else:
-                print('Input lon, {}, is already in east coordinates!'.format(lon))
+                print('Input lon, {}, is already in east coordinates!'
+                      .format(lon))
 
-     return translated_lon
-
+    return translated_lon
 
 
 def get_idc(lats,
