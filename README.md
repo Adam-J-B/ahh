@@ -27,9 +27,10 @@ Basically don't hold me accountable if something goes wrong; go read the license
     - wget_fi: downloads multiple files with a common pattern name
         - option to put in username and password
         - option to select directory for files to be downloaded in
+    - ncdump: prints out netCDF4 metadata
     - concat_nc: combines multiple netCDF4 files with a common pattern name
         - capability to append/reference record dimension properly
-
+        - option to select directory for files to be read from
 ### ahh/sci.py - science functions:
     - get_uac: get the uncentered anomaly correlation of grid
     - get_cac: get the centered anomaly correlation of grid
