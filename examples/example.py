@@ -88,7 +88,7 @@ ext.ahh(theta, name='theta')
 ext.ahh(salt, name='salt')
 
 ### Define East Pacific region: lower, upper, left, right
-    Remember, -130 < -115! ###
+### Remember, -130 < -115! ###
 ep = [15, 30, -130, -115]
 
 ### Get the max min lat and lon indices.
