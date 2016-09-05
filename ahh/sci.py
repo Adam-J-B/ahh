@@ -116,12 +116,12 @@ def get_rmse(obs, fcst, idc):
 
 
 def convert(variable,
-            mm2in=True,
-            c2f=True,
-            c2k=True,
-            f2k=True,
-            mps2mph=True,
-            reverse=True
+            mm2in=False,
+            c2f=False,
+            c2k=False,
+            f2k=False,
+            mps2mph=False,
+            reverse=False
             ):
     """
     Converts the variable from one unit to another.

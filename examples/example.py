@@ -121,27 +121,32 @@ ep_tavg_salt = np.ma.average(lat_tavg_salt, axis=1)
 ext.ahh(ep_tavg_theta, name='ep_tavg_theta')
 ext.ahh(ep_tavg_salt, name='ep_tavg_salt')
 
+""" Convert Celsius to Fahrenheit for Americans """
+
+ep_tavg_theta_f = sci.convert(ep_tavg_theta, c2f=True)
+print(ep_tavg_theta, ep_tavg_theta_f)
+
 """ Two methods of plotting: same axes or subplots """
 
-vis.plot(depth, ep_tavg_theta, 
+vis.plot(depth, ep_tavg_theta_f, 
             y2=ep_tavg_salt,
             sharex=True,
             extray=True,
             title='East Pacific - Week Average of Temperature and Salinity vs Depth',
             xlabel='Depth (m)',
-            ylabel='Temperature (C)',
+            ylabel='Temperature (F)',
             ylabel2='Salinity (PSU)',
             xlim_high=2000,
             xlim_low=0,
             save='example_plot_same_axes.png')
 
-vis.plot(depth, ep_tavg_theta, 
+vis.plot(depth, ep_tavg_theta_f, 
             y2=ep_tavg_salt,
             subplots=2,
             sharex=True,
             title='East Pacific - Week Average of Temperature and Salinity vs Depth',
             xlabel='Depth (m)',
-            ylabel='Temperature (C)',
+            ylabel='Temperature (F)',
             ylabel2='Salinity (PSU)',
             xlim_high=2000,
             xlim_low=0,

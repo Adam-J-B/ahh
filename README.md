@@ -3,6 +3,7 @@ Found a bug? Contact me at huang dot andrew12 at gmail dot com!
 
 Functions that I can easily reference, and maybe you too!
 Docstrings here: https://github.com/ahuang11/ahh/blob/master/docstrings.py
+In-depth example here: https://github.com/ahuang11/ahh/blob/master/examples/example.py
 
 DISCLAIMER: This repo is still in its infancy; I tried to debug as best I could
 within a couple days, but may still return  errors or do something unwanted.
@@ -14,7 +15,7 @@ Basically don't hold me accountable if something goes wrong; go read the license
     - Type "pip install -e ." (may need to be in bash first!)
     - In a Python script, type "from ahh import vis, sci, ext"
 
-### example.py - example usage:
+### example/basic_example.py - basic example usage:
     from ahh import vis
     x = [1, 2, 3, 4]
     y = [5, 6, 7, 8]
@@ -22,14 +23,14 @@ Basically don't hold me accountable if something goes wrong; go read the license
 
 ## CONTAINS:
 
-### pre.py - pre-analysis fucnctions:
+### ahh/pre.py - pre-analysis fucnctions:
     - wget_fi: downloads multiple files with a common pattern name
         - option to put in username and password
         - option to select directory for files to be downloaded in
     - concat_nc: combines multiple netCDF4 files with a common pattern name
         - capability to append/reference record dimension properly
 
-### sci.py - science functions:
+### ahh/sci.py - science functions:
     - get_uac: get the uncentered anomaly correlation of grid
     - get_cac: get the centered anomaly correlation of grid
     - get_rmse: get root mean square error of grid
@@ -40,23 +41,16 @@ Basically don't hold me accountable if something goes wrong; go read the license
         - Fahrenheit to Kelvin
         - meters per second to miles per hour
         - All that in reverse
-    - get_atavg: get the areal and time average
     - get_norm_anom: get the normalized anomaly of array
 
-### ext.py - extra functions:
+### ahh/ext.py - extra functions:
     - ahh: prints out a variable summary
-        - prints out type of variable, length, shape
-        - prints out type of unnested, unnested of unnested, and valid value
+        - prints type, unnested type, length, and shape of a variable.
         - option to title the print output
-        - option to print out the head/tail of variable up to length
-        - control the length of output/how many values get printed out
-        - supports unnesting arrays
-        - control the rows and columns unnested
     - lon360: converts west longitudes to east longitudes
     - get_idc: get the indices for bounding latitudes and longitudes
     - read_nc: read netCDF4 file
         - grabs the opened dataset, time, latitude, and longitude arrays
-    - locate_valid_start: finds the first row and column that isn't zero or masked
 
 ### vis.py - visualization functions:
     - plot: effortlessly make beautiful plots
@@ -70,6 +64,15 @@ Basically don't hold me accountable if something goes wrong; go read the license
     - prettify_plot: effortlessly make your own plot pretty
 
 ## CHANGELOG:
+### - v0.0.5
+    - In-depth example usage is now available!
+    - Completely revamped ext.ahh()
+    - Fixed sci.convert()
+    - Latitude and longitude optional in ext.read_nc
+    - New pre.ncdump() which dumps netCDF4 metadata
+    - pre.concat_nc() now supports other directories
+    - Removed sci.get_atavg and ext.locate_valid_start
+    - Aesthetic improvements and more error messages
 ### - v0.0.4
     - Added ext.lon360() which converts west longitudes to east
     - Added "maxmin" and "w2e" inputs to ext.get_idc()
@@ -99,15 +102,11 @@ Basically don't hold me accountable if something goes wrong; go read the license
 
 ## TO-DO / UPCOMING:
 - Exception handling and display!
-- Some in-depth usage examples!
 - More conversions!
 - More scientific/statistical functions!
 - Add scalability in vis.plot()
 - Put more work into vis.global_map()
-- Implement ability for ext.ahh() to read csv.
 - Fix the known issues listed below!
 
 ## KNOWN ISSUES:
 - vis.plot() "minor" input is useable, but returns inconsistent font and color.
-- ext.ahh() "unnest" still needs major improvement.
-- ext.locate_valid_start() needs major revamp.

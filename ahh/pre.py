@@ -67,8 +67,8 @@ def concat_nc(glob_str, output_fi, directory='./', rec_dim=None):
 
     if rec_dim is not None:
         if os.path.isfile('{}_rd'.format(fi_name)):
-            print('{fi_name}_rd already exists! Not remaking {fi_name}_rd.' \
-                .format(fi_name=fi_name))
+            print('{fi_name}_rd already exists! Not remaking {fi_name}_rd.'
+                  .format(fi_name=fi_name))
         else:
             rec_append_cmd = \
                 'ncks -O --mk_rec_dmn {rec_dim} {fi_name} {fi_name}_rd' \
