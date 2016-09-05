@@ -113,6 +113,7 @@ Basically don't hold me accountable if something goes wrong; go read the license
 - Add scalability in vis.plot()
 - Put more work into vis.global_map()
 - Fix the known issues listed below!
+- Update sci functions to reflect new changes
 
 ## KNOWN ISSUES:
 - vis.plot() "minor" input is useable, but returns inconsistent font and color.

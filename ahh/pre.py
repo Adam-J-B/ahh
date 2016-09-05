@@ -44,7 +44,7 @@ def ncdump(glob_str, directory='./'):
         ncdump_cmd = 'ncdump -h {}'.format(fi_in_str)
         os.system(ncdump_cmd)
     except:
-        print('Could ncdump file!')
+        print('Could not ncdump file!')
 
 
 def concat_nc(glob_str, output_fi, directory='./', rec_dim=None):
