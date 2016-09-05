@@ -6,118 +6,70 @@ __copyright__ = 'Andrew Huang'
 
 
 def ahh(variable,
-        name=None,
-        bare=True,
-        full=False,
-        head=False,
-        tail=False,
-        output_len=8,
-        unnest=False,
-        unnest_row_len=2,
-        unnest_col_len=5,
-        locate_valid=False):
+        name=None):
     """
-    Explores a variable summary to screen; includes values, type, and shape.
+    Explores type, unnested type, length, and shape of a variable.
+    Can optionally include a name to differentiate from other 'ahh's.
 
     :param: variable - variable to be evaluated
     :param: name (boolean) - name of variable
-    :param: bare (boolean) - only print out shape and types
-    :param: full (boolean) - list out every value
-    :param: head (boolean) - list of first values up to output length
-    :param: tail (boolean) - list of last values up to output length
-    :param: output_len (int) - length of print output
-    :param: unnest (boolean) - unnests variable and list out every value
-    :param: unnest_row_len (int) - number of unnested rows
-    :param: unnest_col_len (int) - number of unnested columns
-    :param: locate_valid (boolean) - locates the first valid value to start
     """
     len_of_var = len(variable)
     type_of_var = type(variable)
+    type_of_var2 = None
+    shape_of_var = None
+
     try:
         shape_of_var = np.array(variable).shape
     except:
         pass
-    if name is not None:
-        print('Evaluation of {}'.format(name))
-    if bare:
-        pass
-    else:
-        if head:
-            print('Head of variable is:\n{}\n'.format(
-                variable[0:output_len]))
-        elif tail:
-            tail_first = variable[-output_len:-1]
-            tail_last = variable[-1]
-            tail = np.append(tail_first, tail_last)
-            print('Tail of variable is:\n{}\n'.format(
-                variable[-output_len:-1]))
-        elif full:
-            print('Index, Value')
-            for i, val in enumerate(variable):
-                print(i, val)
-        elif unnest:
-            start_row, start_col = 0, 0
-            rows = range(shape_of_var[0])
-            cols = range(shape_of_var[1])
-            if locate_valid:
-                start_row, start_col = locate_valid_start(variable, rows, cols)
-            rows = range(shape_of_var[0])[start_row:unnest_row_len+start_row]
-            cols = range(shape_of_var[1])[start_col:unnest_col_len+start_col]
-            print('(Row, Column): Unnested Value')
-            for row in rows:
-                for col in cols:
-                    print('({row}, {col}): {var}'.format(
-                        row=row, col=col, var=variable[row, col]))
-        else:
-            print('First {len} values of data in variable is {data}\n'.format(
-                len=output_len, data=variable[:output_len]))
-        print('Type of variable is {}'.format(type_of_var))
+
+    if 'Masked' in str(type_of_var):
+        variable = variable[~variable.mask]
+
     try:
-        type_of_val_in_var = type(variable[0])
-        print('Type of first unnested value of variable is {}'.format(
-            type_of_val_in_var))
-    except:
-        pass
-    try:
-        type_of_val_in_unnested_var = type(variable[0][0])
-        print('Type of first unnested of unnested value of variable is {}'
-              .format(type_of_val_in_unnested_var))
-    except:
-        pass
-    try:
-        start_row, start_col = locate_valid_start(variable, rows, cols)
-        type_valid_val_in_unnested_var = type(variable[start_row][start_col])
-        print('Type of first valid unnested, unnested value of variable is {}'
-              .format(type_valid_val_in_unnested_var))
-    except:
-        pass
-    try:
-        print('Length of variable is: {}'.format(len_of_var))
-    except:
-        pass
-    try:
-        print('Shape of variable is: {}\n'.format(shape_of_var))
+        type_of_var2 = type(variable.flatten()[0])
     except:
         pass
 
+    print('')
+    print('Name: {}'.format(name))
+    print('Overarching Type: {}').format(type_of_var)
+    print('Unnested Type: {}').format(type_of_var2)
+    print('Length: {}'.format(len_of_var))
+    print('Shape: {}\n'.format(shape_of_var))
 
-def lon360(lon, array=False):
+
+def lonw2e(lon, array=False, reverse=False):
     """
-    Converts a west longitude to east longitude.
-
+    Converts a west longitude to east longitude, can also do in reverse.
     :param: lon (int) - a west longitude
-    :param: array (boolean) - indicator whether input is an array
+    :param: reverse (boolean) - indicator whether input is an array
+    :param: array (boolean) - indicator whether to go the other direction
     :return: translated_lon (int) - translated longitude
     """
-    if array:
-        translated_lon = np.array(lon)
-        west_lon_idc = np.where(translated_lon < 0)
-        translated_lon[west_lon_idc] += 360
-    else:
-        if lon < 0:
-            translated_lon = 360 + lon
+    if not reverse:
+        if array:
+            translated_lon = np.array(lon)
+            west_lon_idc = np.where(translated_lon < 0)
+            translated_lon[west_lon_idc] += 360
         else:
-            print('Input lon, {}, is already in east coordinates!'.format(lon))
+            if lon < 0:
+                translated_lon = 360 + lon
+            else:
+                print('Input lon, {}, is already in east coordinates!'
+                      .format(lon))
+    else:
+        if array:
+            translated_lon = np.array(lon)
+            west_lon_idc = np.where(translated_lon > 180)
+            translated_lon[west_lon_idc] -= 360
+        else:
+            if lon > 180:
+                translated_lon = lon - 360
+            else:
+                print('Input lon, {}, is already in east coordinates!'
+                      .format(lon))
 
     return translated_lon
 
@@ -129,7 +81,8 @@ def get_idc(lats,
             left_lon,
             right_lon,
             maxmin=False,
-            w2e=False):
+            w2e=False,
+            e2w=False):
     """
     Finds the indices for given latitudes and longitudes boundary.
 
@@ -140,7 +93,8 @@ def get_idc(lats,
     :param: left_lon (float) - western longitude boundary
     :param: right_lon (float) - eastern longitude boundary
     :param: maxmin (boolean) - return only the max and min of lat/lon idc
-    :param: w2e (boolean) - convert west longitudes to east longitudes
+    :param: w2e (boolean) - convert input west longitudes to east longitudes
+    :param: e2w (boolean) - convert input east longitudes to west longitudes
     :return: lats_idc, lons_idc (np.array, np.array) - indices of lats/lons
     :return: lat_start_idc, lat_end_idc, lon_start_idc, lon_end_idc -
              (np.int64, np.int64, np.int64, np.int64)
@@ -150,8 +104,12 @@ def get_idc(lats,
     lons = np.array(lons)
 
     if w2e:
-        left_lon = lon360(left_lon)
-        right_lon = lon360(right_lon)
+        left_lon = lonw2e(left_lon)
+        right_lon = lonw2e(right_lon)
+
+    if e2w:
+        left_lon = lonw2e(left_lon, reverse=True)
+        right_lon = lonw2e(right_lon, reverse=True)
 
     lats_idc = np.where(
                          (lats >= lower_lat)
@@ -174,7 +132,6 @@ def get_idc(lats,
         return lat_start_idc, lat_end_idc, lon_start_idc, lon_end_idc
 
     return lats_idc[0], lons_idc[0]
-
 
 
 def read_nc(file_path,
@@ -210,8 +167,13 @@ def read_nc(file_path,
     except:
         print('Unable to find the given lat, lon variable name!')
         print('Will try the variable names: "latitude" and "longitude"')
-        lats = fi_in.variables['latitude'][:]
-        lons = fi_in.variables['longitude'][:]
+        try:
+            lats = fi_in.variables['latitude'][:]
+            lons = fi_in.variables['longitude'][:]
+        except:
+            print('Unable to find any lat, lon variable; returning None')
+            lats = None
+            lons = None
     try:
         if num2date:
             time_var = fi_in.variables[time]
@@ -219,7 +181,7 @@ def read_nc(file_path,
         else:
             time = fi_in.variables[time][:]
     except:
-        print('Unable to convert to dt or failed to find a time variable.')
+        print('Unable to create time variable; returning None')
         time = None
     if extra is not None:
         extra_var = fi_in.variables[extra][:]
@@ -235,25 +197,6 @@ def read_nc(file_path,
     else:
         fi_in.close()
         return time, lats, lons
-
-
-def locate_valid_start(variable, num_rows, num_cols):
-    """
-    Finds the first row and column that isn't zero or masked.
-
-    :param: variable - variable to be evaluated
-    :param: rows (int) - number of rows of variable
-    :param: cols (int) - number of columns of variable
-    :return: start_row, start_col (int, int) -
-             first row/col that isn't zero or masked
-    """
-    for row in num_rows:
-        for col in num_cols:
-            if variable[row, col] != 0 and \
-                    type(variable[row, col]) != np.ma.core.MaskedConstant:
-                start_row = row
-                start_col = col
-                return start_row, start_col
 
 
 def create_dt_arr(time_var, calendar='standard'):

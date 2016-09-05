@@ -116,12 +116,12 @@ def get_rmse(obs, fcst, idc):
 
 
 def convert(variable,
-            mm2in=True,
-            c2f=True,
-            c2k=True,
-            f2k=True,
-            mps2mph=True,
-            reverse=True
+            mm2in=False,
+            c2f=False,
+            c2k=False,
+            f2k=False,
+            mps2mph=False,
+            reverse=False
             ):
     """
     Converts the variable from one unit to another.
@@ -159,20 +159,6 @@ def convert(variable,
         elif mps2mph:
             conv_var = np_var * 1609.344 / 3600
     return conv_var
-
-
-def get_atavg(data, time_idc, lats_idc, lons_idc):
-    """
-    Finds the average over a given area and time
-
-    :param: data (np.array) - array of data to be averaged
-    :param: time_idc (np.array) - array of time indices
-    :param: lats_idc (np.array) - array of latitude indices
-    :param: lons_idc (np.array) - array of longitude indices
-    :return: spatial_time_avg (float) - average over time and area
-    """
-    spatial_time_avg = np.average(data[time_idc, lats_idc, lons_idc])
-    return spatial_time_avg
 
 
 def get_norm_anom(data_avg):

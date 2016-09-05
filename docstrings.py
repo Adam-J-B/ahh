@@ -18,21 +18,31 @@ def wget_fi(base_url, glob_str, user=None, pwd=None, directory=None):
     :param: glob_str (str) - the naming pattern of the files
     :param: user (str) - username
     :param: pwd (str) - password
-    :param: dir (str) - name of directory for files to be saved
+    :param: directory (str) - name of directory for files to be saved
     """
 
 
-def concat_nc(glob_str, output_fi, append_rec_dim=None):
+def ncdump(glob_str, directory='./'):
+    """
+    Wrapper of ncdump; prints out netCDF metadata.
+
+    :param: glob_str (str) - the naming pattern of the files
+    :param: directory (str) - directory of file
+    """
+
+
+def concat_nc(glob_str, output_fi, directory='./', rec_dim=None):
     """
     Wrapper of NCO's ncrcat and optional ncks; concatenates a list of netCDF
     files given a glob_str (i.e. 'THETA.1440x720x50.2010*.nc') and outputs
     concatenated file as the given output_fi. If there's an error complaining
     that there's no record dimension, can give the dimension name to
-    concatenate across under append_rec_dim.
+    concatenate across under rec_dim.
 
     :param: glob_str (str) - the naming pattern of the files
     :param: output_fi (str) - name of concatenated file
-    :param: append_rec_dim (str) - name of dimension to act as record dimension
+    :param: directory (str) - directory of both input and output files
+    :param: rec_dim (str) - name of dimension to act as record dimension
     """
 
 ##############################################################################
@@ -40,39 +50,22 @@ def concat_nc(glob_str, output_fi, append_rec_dim=None):
 ##############################################################################
 
 def ahh(variable,
-        name=None,
-        bare=True,
-        full=False,
-        head=False,
-        tail=False,
-        output_len=8,
-        unnest=False,
-        unnest_row_len=2,
-        unnest_col_len=5,
-        locate_valid=False):
+        name=None):
     """
-    Explores a variable summary to screen; includes values, type, and shape.
+    Explores type, unnested type, length, and shape of a variable.
+    Can optionally include a name to differentiate from other 'ahh's.
 
     :param: variable - variable to be evaluated
     :param: name (boolean) - name of variable
-    :param: bare (boolean) - only print out shape and types
-    :param: full (boolean) - list out every value
-    :param: head (boolean) - list of first values up to output length
-    :param: tail (boolean) - list of last values up to output length
-    :param: output_len (int) - length of print output
-    :param: unnest (boolean) - unnests variable and list out every value
-    :param: unnest_row_len (int) - number of unnested rows
-    :param: unnest_col_len (int) - number of unnested columns
-    :param: locate_valid (boolean) - locates the first valid value to start
     """
 
 
-def lon360(lon, array=False):
+def lonw2e(lon, array=False, reverse=False):
     """
-    Converts a west longitude to east longitude.
-
+    Converts a west longitude to east longitude, can also do in reverse.
     :param: lon (int) - a west longitude
-    :param: array (boolean) - indicator whether input is an array
+    :param: reverse (boolean) - indicator whether input is an array
+    :param: array (boolean) - indicator whether to go the other direction
     :return: translated_lon (int) - translated longitude
     """
 
@@ -84,7 +77,8 @@ def get_idc(lats,
             left_lon,
             right_lon,
             maxmin=False,
-            w2e=False):
+            w2e=False,
+            e2w=True):
     """
     Finds the indices for given latitudes and longitudes boundary.
 
@@ -95,7 +89,8 @@ def get_idc(lats,
     :param: left_lon (float) - western longitude boundary
     :param: right_lon (float) - eastern longitude boundary
     :param: maxmin (boolean) - return only the max and min of lat/lon idc
-    :param: w2e (boolean) - convert west longitudes to east longitudes
+    :param: w2e (boolean) - convert input west longitudes to east longitudes
+    :param: e2w (boolean) - convert input east longitudes to west longitudes
     :return: lats_idc, lons_idc (np.array, np.array) - indices of lats/lons
     :return: lat_start_idc, lat_end_idc, lon_start_idc, lon_end_idc -
              (np.int64, np.int64, np.int64, np.int64)
@@ -126,18 +121,6 @@ def read_nc(file_path,
     :return: fi_in, time, lats, lons
             (netCDF4.Dataset, np.array, np.array, np.array)
             netCDF4 dataset, time array, latitude array, longitude array
-    """
-
-
-def locate_valid_start(variable, num_rows, num_cols):
-    """
-    Finds the first row and column that isn't zero or masked.
-
-    :param: variable - variable to be evaluated
-    :param: rows (int) - number of rows of variable
-    :param: cols (int) - number of columns of variable
-    :return: start_row, start_col (int, int) -
-             first row/col that isn't zero or masked
     """
 
 
@@ -196,17 +179,6 @@ def convert(variable,
             mps2mph=True,
             reverse=True
             ):
-
-def get_atavg(data, time_idc, lats_idc, lons_idc):
-    """
-    Finds the average over a given area and time
-
-    :param: data (np.array) - array of data to be averaged
-    :param: time_idc (np.array) - array of time indices
-    :param: lats_idc (np.array) - array of latitude indices
-    :param: lons_idc (np.array) - array of longitude indices
-    :return: spatial_time_avg (float) - average over time and area
-    """
 
 
 def get_norm_anom(data_avg):
