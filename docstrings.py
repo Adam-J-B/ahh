@@ -60,12 +60,12 @@ def ahh(variable,
     """
 
 
-def lon360(lon, array=False):
+def lonw2e(lon, array=False, reverse=False):
     """
-    Converts a west longitude to east longitude.
-
+    Converts a west longitude to east longitude, can also do in reverse.
     :param: lon (int) - a west longitude
-    :param: array (boolean) - indicator whether input is an array
+    :param: reverse (boolean) - indicator whether input is an array
+    :param: array (boolean) - indicator whether to go the other direction
     :return: translated_lon (int) - translated longitude
     """
 
@@ -77,7 +77,8 @@ def get_idc(lats,
             left_lon,
             right_lon,
             maxmin=False,
-            w2e=False):
+            w2e=False,
+            e2w=True):
     """
     Finds the indices for given latitudes and longitudes boundary.
 
@@ -88,7 +89,8 @@ def get_idc(lats,
     :param: left_lon (float) - western longitude boundary
     :param: right_lon (float) - eastern longitude boundary
     :param: maxmin (boolean) - return only the max and min of lat/lon idc
-    :param: w2e (boolean) - convert west longitudes to east longitudes
+    :param: w2e (boolean) - convert input west longitudes to east longitudes
+    :param: e2w (boolean) - convert input east longitudes to west longitudes
     :return: lats_idc, lons_idc (np.array, np.array) - indices of lats/lons
     :return: lat_start_idc, lat_end_idc, lon_start_idc, lon_end_idc -
              (np.int64, np.int64, np.int64, np.int64)

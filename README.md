@@ -48,8 +48,11 @@ Basically don't hold me accountable if something goes wrong; go read the license
     - ahh: prints out a variable summary
         - prints type, unnested type, length, and shape of a variable.
         - option to title the print output
-    - lon360: converts west longitudes to east longitudes
+    - lonw2e: converts west longitudes to east longitudes
+        - option to do reverse
     - get_idc: get the indices for bounding latitudes and longitudes
+        - option return only the max and min
+        - option to convert input west longitudes to east or vice versa
     - read_nc: read netCDF4 file
         - grabs the opened dataset, time, latitude, and longitude arrays
 
@@ -73,6 +76,8 @@ Basically don't hold me accountable if something goes wrong; go read the license
     - New pre.ncdump() which dumps netCDF4 metadata
     - pre.concat_nc() now supports other directories
     - Removed sci.get_atavg and ext.locate_valid_start
+    - Renamed lon360 to lonw2e
+    - Added ability to convert longitudes from east to west
     - Aesthetic improvements and more error messages
 ### - v0.0.4
     - Added ext.lon360() which converts west longitudes to east
