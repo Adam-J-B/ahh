@@ -2,7 +2,9 @@
 Found a bug? Contact me at huang dot andrew12 at gmail dot com!
 
 Functions that I can easily reference, and maybe you too!
+
 Docstrings here: https://github.com/ahuang11/ahh/blob/master/docstrings.py
+
 In-depth example here: https://github.com/ahuang11/ahh/blob/master/examples/example.py
 
 DISCLAIMER: This repo is still in its infancy; I tried to debug as best I could
