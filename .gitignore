@@ -1,4 +1,2 @@
 *.pyc
-test.py
-ahh/test.py
-ahh/meh.png
+examples/example_data/

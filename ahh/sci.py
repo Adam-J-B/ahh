@@ -161,20 +161,6 @@ def convert(variable,
     return conv_var
 
 
-def get_atavg(data, time_idc, lats_idc, lons_idc):
-    """
-    Finds the average over a given area and time
-
-    :param: data (np.array) - array of data to be averaged
-    :param: time_idc (np.array) - array of time indices
-    :param: lats_idc (np.array) - array of latitude indices
-    :param: lons_idc (np.array) - array of longitude indices
-    :return: spatial_time_avg (float) - average over time and area
-    """
-    spatial_time_avg = np.average(data[time_idc, lats_idc, lons_idc])
-    return spatial_time_avg
-
-
 def get_norm_anom(data_avg):
     """
     Finds the normalized anomaly of some averaged data

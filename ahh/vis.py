@@ -117,8 +117,7 @@ def plot(
         raise(MissingInput)
     if extray and extra is False:
         print(
-            'Input "extra" was not set with "extray",\
-             automatically setting extra = True')
+            'Input "extra" automatically set to True because "of extray"')
         extra = True
     if subplots > 1:
         if sharey:
@@ -390,10 +389,11 @@ def global_map(
         plt.show()
     return fig
 
+
 def prettify_plot(ax):
     """
     Input ax and get a pretty plot back!
-    
+
     :param: ax (matplotlib.axes) - original axis
     :return: ax (matplotlib.axes) - prettified axis
     """
