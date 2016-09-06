@@ -40,6 +40,20 @@ def ahh(variable,
     print('Shape: {}\n'.format(shape_of_var))
 
 
+def aa():
+    """
+    Marker
+    """
+    print('aa')
+
+
+def zz():
+    """
+    Marker
+    """
+    print('zz')
+
+
 def lonw2e(lon, array=False, reverse=False):
     """
     Converts a west longitude to east longitude, can also do in reverse.

@@ -9,6 +9,7 @@ __copyright__ = 'Andrew Huang'
 ### pre.py ###################################################################
 ##############################################################################
 
+
 def wget_fi(base_url, glob_str, user=None, pwd=None, directory=None):
     """
     Wrapper of wget; downloads files that matches the given glob_str. Can input
@@ -45,9 +46,11 @@ def concat_nc(glob_str, output_fi, directory='./', rec_dim=None):
     :param: rec_dim (str) - name of dimension to act as record dimension
     """
 
+
 ##############################################################################
 ### ext.py ###################################################################
 ##############################################################################
+
 
 def ahh(variable,
         name=None):
@@ -133,9 +136,11 @@ def create_dt_arr(time_var, calendar='standard'):
     :return: datetime_array (np.array) - array of datetimes
     """
 
+
 ##############################################################################
 ### sci.py ###################################################################
 ##############################################################################
+
 
 def get_uac(obs, fcst, clim):
     """
@@ -189,9 +194,11 @@ def get_norm_anom(data_avg):
     :return: data_anom (float) - normalized anomaly
     """
 
+
 ##############################################################################
 ### vis.py ###################################################################
 ##############################################################################
+
 
 def plot(
          x,
@@ -302,7 +309,7 @@ def global_map(
 def prettify_plot(ax):
     """
     Input ax and get a pretty plot back!
-    
+
     :param: ax (matplotlib.axes) - original axis
     :return: ax (matplotlib.axes) - prettified axis
     """
