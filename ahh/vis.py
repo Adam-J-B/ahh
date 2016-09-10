@@ -312,10 +312,10 @@ def plot(
                     print('No ylabel2 found, defaulting to "y2"')
                     ylabel2 = 'y2'
                 ax2.set_ylabel(ylabel2, fontsize=16.5)
-                if ylim_high is not None and ylim_low is not None:
+                if ylim2_high is not None and ylim2_low is not None:
                     ax2.set_ylim(ylim2_low, ylim2_high)
                 if xlim_high is not None and xlim_low is not None:
-                    ax2.set_xlim(xlim2_low, xlim2_high)
+                    ax2.set_xlim(xlim_low, xlim_high)
                 ax2.spines["top"].set_visible(False)
                 ax2.spines["bottom"].set_visible(False)
                 ax2.spines["right"].set_visible(False)

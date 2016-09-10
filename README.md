@@ -16,6 +16,7 @@ Basically don't hold me accountable if something goes wrong; go read the license
     - Go into ahh folder (where setup.py is)
     - Type "pip install -e ." (may need to be in bash first!)
     - In a Python script, type "from ahh import vis, sci, ext"
+    - Check out example.py in the examples folder for example usage!
 
 ### example/basic_example.py - basic example usage:
     from ahh import vis
@@ -50,6 +51,8 @@ Basically don't hold me accountable if something goes wrong; go read the license
     - ahh: prints out a variable summary
         - prints type, unnested type, length, and shape of a variable.
         - option to title the print output
+    - p: prints a mark in the terminal to help debug
+        - option to differentiate marks
     - lonw2e: converts west longitudes to east longitudes
         - option to do reverse
     - get_idc: get the indices for bounding latitudes and longitudes
@@ -70,6 +73,10 @@ Basically don't hold me accountable if something goes wrong; go read the license
     - prettify_plot: effortlessly make your own plot pretty
 
 ## CHANGELOG:
+### - v0.0.6
+    - Debug your code easier with ext.p()!
+    - Bug fix with xlim not working properly in vis.plot()
+    - Cleaned up example.py
 ### - v0.0.5
     - In-depth example usage is now available!
     - Completely revamped ext.ahh()
@@ -113,6 +120,7 @@ Basically don't hold me accountable if something goes wrong; go read the license
 - More conversions!
 - More scientific/statistical functions!
 - Add scalability in vis.plot()
+- Add more plots functionality in vis.plot()
 - Put more work into vis.global_map()
 - Fix the known issues listed below!
 - Update sci functions to reflect new changes
