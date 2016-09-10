@@ -40,18 +40,13 @@ def ahh(variable,
     print('Shape: {}\n'.format(shape_of_var))
 
 
-def aa():
+def p(num=1):
     """
-    Marker
-    """
-    print('aa')
+    Prints a noticeable mark in the terminal to help debug.
 
-
-def zz():
+    :param: num (int) - number to differentiate your markers
     """
-    Marker
-    """
-    print('zz')
+    print('\n######## MARK {} ########\n'.format(num))
 
 
 def lonw2e(lon, array=False, reverse=False):
