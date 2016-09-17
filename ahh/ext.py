@@ -6,7 +6,13 @@ __copyright__ = 'Andrew Huang'
 
 
 def ahh(variable,
-        name=None):
+        name='ahh',
+        center=0,
+        offset=0,
+        threshold=15,
+        precision=2,
+        edgeitems=5,
+        suppress=True):
     """
     Explores type, unnested type, length, and shape of a variable.
     Can optionally include a name to differentiate from other 'ahh's.
@@ -15,30 +21,70 @@ def ahh(variable,
     :param: name (boolean) - name of variable
     """
     len_of_var = len(variable)
+    center_of_var = len(variable)/2
     type_of_var = type(variable)
     type_of_var2 = None
     shape_of_var = None
+    max_of_var = None
+    min_of_var = None
 
     try:
         shape_of_var = np.array(variable).shape
     except:
         pass
 
+    try:
+        max_of_var = np.max(variable)
+        min_of_var = np.min(variable)
+    except:
+        pass
+
     if 'Masked' in str(type_of_var):
         variable = variable[~variable.mask]
+        center_of_var = len(variable)/2
+        print('')
+        print('NOTE! This array has been temporarily reshaped to 1D to show')
+        print('only non-masked values. Therefore, if you are printing out')
+        print('the center, it may show an anomalously large indice!')
 
     try:
         type_of_var2 = type(variable.flatten()[0])
     except:
         pass
 
-    print('')
-    print('Name: {}'.format(name))
-    print('Overarching Type: {}').format(type_of_var)
-    print('Unnested Type: {}').format(type_of_var2)
-    print('Length: {}'.format(len_of_var))
-    print('Shape: {}\n'.format(shape_of_var))
+    np.set_printoptions(
+                        suppress=suppress,
+                        threshold=threshold,
+                        precision=precision,
+                        edgeitems=edgeitems
+                        )
 
+    print('')
+    print('            Name: {}'.format(name))
+    print('Overarching Type: {}'.format(type_of_var))
+    print('   Unnested Type: {}'.format(type_of_var2))
+    print('  Original Shape: {}'.format(shape_of_var))
+    print('          Length: {}'.format(len_of_var))
+    print('         Maximum: {}'.format(max_of_var))
+    print('         Minimum: {}'.format(min_of_var))
+    print('')
+
+    print('Snippet of values:')
+    print(np.array(variable))
+    if center != 0:
+        try:
+            print('Values around indice {}:'\
+                    .format(center_of_var + offset))
+            print(np.array(
+                          variable[
+                                  center_of_var - center + offset:
+                                  center_of_var + center + offset
+                                  ]
+                          )
+                 )
+        except:
+            print('Unable to get center of variable!')
+        print('')
 
 def p(num=1):
     """

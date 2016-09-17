@@ -1,3 +1,5 @@
+import matplotlib
+matplotlib.use('agg')
 import matplotlib.pyplot as plt
 from matplotlib.dates import YearLocator, MonthLocator, DayLocator,\
                              HourLocator, DateFormatter
