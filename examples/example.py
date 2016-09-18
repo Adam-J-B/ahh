@@ -91,8 +91,8 @@ _, _, _, salt = ext.read_nc(output_salt_fp,
                             extra='SALT')
 
 # # Do a quick check if it was read in correctly.
-ext.ahh(theta, name='theta')
-ext.ahh(salt, name='salt')
+ext.ahh(theta, n='theta')
+ext.ahh(salt, n='salt')
 
 # # Define East Pacific region: lower, upper, left, right
 # # Remember, -130 < -115!
@@ -109,8 +109,8 @@ tavg_theta = np.ma.average(theta, axis=0)
 tavg_salt = np.ma.average(salt, axis=0)
 
 # # Do another quick check
-ext.ahh(tavg_theta, name='tavg_theta')
-ext.ahh(tavg_salt, name='tavg_salt')
+ext.ahh(tavg_theta, n='tavg_theta')
+ext.ahh(tavg_salt, n='tavg_salt')
 
 # # Average over lat (new axis 1)
 lat_tavg_theta = np.ma.average(tavg_theta, axis=1)
@@ -121,8 +121,8 @@ ep_tavg_theta = np.ma.average(lat_tavg_theta, axis=1)
 ep_tavg_salt = np.ma.average(lat_tavg_salt, axis=1)
 
 # # Final check!
-ext.ahh(ep_tavg_theta, name='ep_tavg_theta')
-ext.ahh(ep_tavg_salt, name='ep_tavg_salt')
+ext.ahh(ep_tavg_theta, n='ep_tavg_theta')
+ext.ahh(ep_tavg_salt, n='ep_tavg_salt')
 
 # # Convert Celsius to Fahrenheit for Americans
 ep_tavg_theta_f = sci.convert(ep_tavg_theta, c2f=True)
