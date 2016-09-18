@@ -6,21 +6,34 @@ __copyright__ = 'Andrew Huang'
 
 
 def ahh(variable,
-        name='ahh',
+        n='ahh',
         center=0,
         offset=0,
         threshold=15,
         precision=2,
         edgeitems=5,
-        suppress=True):
+        suppress=True,
+        fillval=9999.):
     """
     Explores type, unnested type, length, and shape of a variable.
     Can optionally include a name to differentiate from other 'ahh's.
 
-    :param: variable - variable to be evaluated
-    :param: name (boolean) - name of variable
+    :param: variable (array) - variable to be evaluated
+    :param: n (boolean) - name of variable
+    :param: center (int) - if not 0, the number*2 to print around the center
+    :param: offset (int) - count of indices offset from the center
+    :param: threshold (int) - count before abbrieviating the print
+    :param: precision (int) - number of decimal places
+    :param: edgeitems (int) - how many numbers to print on the edge
+    :param: suppress (boolean) - whether to suppress scientific notation
+    :param: fillval (float) - anything equal/greater than fill value will
+                              not be included in the max and min
     """
-    len_of_var = len(variable)
+    variable = np.array(variable)
+    try:
+        len_of_var = len(variable)
+    except:
+        len_of_var = None
     center_of_var = len(variable)/2
     type_of_var = type(variable)
     type_of_var2 = None
@@ -34,8 +47,9 @@ def ahh(variable,
         pass
 
     try:
-        max_of_var = np.max(variable)
-        min_of_var = np.min(variable)
+        fillval_idc = np.where(variable < fillval)
+        max_of_var = np.max(variable[fillval_idc])
+        min_of_var = np.min(variable[fillval_idc])
     except:
         pass
 
@@ -60,7 +74,7 @@ def ahh(variable,
                         )
 
     print('')
-    print('            Name: {}'.format(name))
+    print('            Name: {}'.format(n))
     print('Overarching Type: {}'.format(type_of_var))
     print('   Unnested Type: {}'.format(type_of_var2))
     print('  Original Shape: {}'.format(shape_of_var))
@@ -73,18 +87,19 @@ def ahh(variable,
     print(np.array(variable))
     if center != 0:
         try:
-            print('Values around indice {}:'\
-                    .format(center_of_var + offset))
+            print('Values around indice {}:'
+                  .format(center_of_var + offset))
             print(np.array(
                           variable[
                                   center_of_var - center + offset:
                                   center_of_var + center + offset
                                   ]
                           )
-                 )
+                  )
         except:
             print('Unable to get center of variable!')
         print('')
+
 
 def p(num=1):
     """
