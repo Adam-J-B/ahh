@@ -192,6 +192,12 @@ def get_idc(lats,
                          (lons <= right_lon)
                          )
 
+    if len(lats_idc) == 0:
+        print('Unable to find any lat indices within the range!')
+    if len(lons_idc) == 0:
+        print('Unable to find any lon indices within the range!')
+        print('Perhaps convert west longitudes to east, or vice versa?')
+
     if maxmin:
         lats_idc = lats_idc[0].min(), lats_idc[0].max()
         lons_idc = lons_idc[0].min(), lons_idc[0].max()
@@ -284,3 +290,13 @@ def create_dt_arr(time_var, calendar='standard'):
         datetime_array = num2date(
             time_var[:], units=time_var.units, calendar=calendar)
     return datetime_array
+
+
+def dt2jul(dt):
+    """
+    Return julian day out of a datetime.
+
+    :param: dt (datetime.datetime/int) - datetime
+    :return: jday (int) - julian day
+    """
+    return dt.timetuple().tm_yday
