@@ -136,6 +136,7 @@ Basically don't hold me accountable if something goes wrong; go read the license
 - Remove clutter (if, else) from vis.plot()
 - Add more plots functionality in vis.plot()
 - Put more work into vis.global_map()
+- Replace basemap with cartopy
 - Input latitudes and longitudes and locate those values into ahh
 - Possibly add read csv capabilities?
 - Update sci functions to be more flexible and reflect new changes
