@@ -53,13 +53,28 @@ def concat_nc(glob_str, output_fi, directory='./', rec_dim=None):
 
 
 def ahh(variable,
-        name=None):
+        n='ahh',
+        center=0,
+        offset=0,
+        threshold=15,
+        precision=2,
+        edgeitems=5,
+        suppress=True,
+        fillval=9999.):
     """
     Explores type, unnested type, length, and shape of a variable.
     Can optionally include a name to differentiate from other 'ahh's.
 
-    :param: variable - variable to be evaluated
-    :param: name (boolean) - name of variable
+    :param: variable (array) - variable to be evaluated
+    :param: n (boolean) - name of variable
+    :param: center (int) - if not 0, the number*2 to print around the center
+    :param: offset (int) - count of indices offset from the center
+    :param: threshold (int) - count before abbrieviating the print
+    :param: precision (int) - number of decimal places
+    :param: edgeitems (int) - how many numbers to print on the edge
+    :param: suppress (boolean) - whether to suppress scientific notation
+    :param: fillval (float) - anything equal/greater than fill value will
+                              not be included in the max and min
     """
 
 
@@ -143,6 +158,15 @@ def create_dt_arr(time_var, calendar='standard'):
     :param: time_var (netCDF4.Variable) - unopened time variable
     :param: calendar (str) - type of calendar
     :return: datetime_array (np.array) - array of datetimes
+    """
+
+
+def dt2jul(dt):
+    """
+    Return julian day out of a datetime.
+
+    :param: dt (datetime.datetime/int) - datetime
+    :return: jday (int) - julian day
     """
 
 
@@ -339,3 +363,34 @@ def prettify_plot(ax):
     ax.xaxis.grid(
         b=True, which='major', color='.55', linestyle='--')
     return ax
+
+
+def set_labels(ax, xlabel, ylabel, title=''):
+    """
+    Input ax and names of xlabel and ylabel to return a
+    prettified x axis and y axis label.
+
+    :param: ax (matplotlib.axes) - original axis
+    :param: xlabel (str) - x axis label
+    :param: ylabel (str) - y axis label
+    :param: title (str) - title of plot
+    """
+
+
+def set_legend(ax,
+               color='0.5',
+               fontsize='16.5',
+               loc='best',
+               ncol=4,
+               frameon=False):
+    """
+    Input ax and plt to return a prettified legend. Must set
+    names of labels separately though.
+
+    :param: ax (matplotlib.axes) - original axis\
+    :param: color (str) - matplotlib abbrieviation of color
+    :param: fontsize (str) - font size of legend text
+    :param: loc (str) - matplotlib names of locations
+    :param: ncol (int) - number of legend columns
+    :param: frameon (boolean) - switch for having a box around legend
+    """

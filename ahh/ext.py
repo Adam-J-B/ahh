@@ -6,38 +6,99 @@ __copyright__ = 'Andrew Huang'
 
 
 def ahh(variable,
-        name=None):
+        n='ahh',
+        center=0,
+        offset=0,
+        threshold=15,
+        precision=2,
+        edgeitems=5,
+        suppress=True,
+        fillval=9999.):
     """
     Explores type, unnested type, length, and shape of a variable.
     Can optionally include a name to differentiate from other 'ahh's.
 
-    :param: variable - variable to be evaluated
-    :param: name (boolean) - name of variable
+    :param: variable (array) - variable to be evaluated
+    :param: n (boolean) - name of variable
+    :param: center (int) - if not 0, the number*2 to print around the center
+    :param: offset (int) - count of indices offset from the center
+    :param: threshold (int) - count before abbrieviating the print
+    :param: precision (int) - number of decimal places
+    :param: edgeitems (int) - how many numbers to print on the edge
+    :param: suppress (boolean) - whether to suppress scientific notation
+    :param: fillval (float) - anything equal/greater than fill value will
+                              not be included in the max and min
     """
-    len_of_var = len(variable)
+    variable = np.array(variable)
+    try:
+        len_of_var = len(variable)
+    except:
+        len_of_var = None
+    center_of_var = len(variable)/2
     type_of_var = type(variable)
     type_of_var2 = None
     shape_of_var = None
+    max_of_var = None
+    min_of_var = None
 
     try:
         shape_of_var = np.array(variable).shape
     except:
         pass
 
+    try:
+        fillval_idc = np.where(variable < fillval)
+        max_of_var = np.max(variable[fillval_idc])
+        min_of_var = np.min(variable[fillval_idc])
+    except:
+        pass
+
     if 'Masked' in str(type_of_var):
         variable = variable[~variable.mask]
+        center_of_var = len(variable)/2
+        print('')
+        print('NOTE! This array has been temporarily reshaped to 1D to show')
+        print('only non-masked values. Therefore, if you are printing out')
+        print('the center, it may show an anomalously large indice!')
 
     try:
         type_of_var2 = type(variable.flatten()[0])
     except:
         pass
 
+    np.set_printoptions(
+                        suppress=suppress,
+                        threshold=threshold,
+                        precision=precision,
+                        edgeitems=edgeitems
+                        )
+
     print('')
-    print('Name: {}'.format(name))
-    print('Overarching Type: {}').format(type_of_var)
-    print('Unnested Type: {}').format(type_of_var2)
-    print('Length: {}'.format(len_of_var))
-    print('Shape: {}\n'.format(shape_of_var))
+    print('            Name: {}'.format(n))
+    print('Overarching Type: {}'.format(type_of_var))
+    print('   Unnested Type: {}'.format(type_of_var2))
+    print('  Original Shape: {}'.format(shape_of_var))
+    print('          Length: {}'.format(len_of_var))
+    print('         Maximum: {}'.format(max_of_var))
+    print('         Minimum: {}'.format(min_of_var))
+    print('')
+
+    print('Snippet of values:')
+    print(np.array(variable))
+    if center != 0:
+        try:
+            print('Values around indice {}:'
+                  .format(center_of_var + offset))
+            print(np.array(
+                          variable[
+                                  center_of_var - center + offset:
+                                  center_of_var + center + offset
+                                  ]
+                          )
+                  )
+        except:
+            print('Unable to get center of variable!')
+        print('')
 
 
 def p(num=1):
@@ -131,6 +192,12 @@ def get_idc(lats,
                          (lons <= right_lon)
                          )
 
+    if len(lats_idc) == 0:
+        print('Unable to find any lat indices within the range!')
+    if len(lons_idc) == 0:
+        print('Unable to find any lon indices within the range!')
+        print('Perhaps convert west longitudes to east, or vice versa?')
+
     if maxmin:
         lats_idc = lats_idc[0].min(), lats_idc[0].max()
         lons_idc = lons_idc[0].min(), lons_idc[0].max()
@@ -223,3 +290,13 @@ def create_dt_arr(time_var, calendar='standard'):
         datetime_array = num2date(
             time_var[:], units=time_var.units, calendar=calendar)
     return datetime_array
+
+
+def dt2jul(dt):
+    """
+    Return julian day out of a datetime.
+
+    :param: dt (datetime.datetime/int) - datetime
+    :return: jday (int) - julian day
+    """
+    return dt.timetuple().tm_yday

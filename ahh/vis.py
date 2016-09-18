@@ -1,3 +1,5 @@
+import matplotlib
+matplotlib.use('agg')
 import matplotlib.pyplot as plt
 from matplotlib.dates import YearLocator, MonthLocator, DayLocator,\
                              HourLocator, DateFormatter
@@ -414,3 +416,40 @@ def prettify_plot(ax):
     ax.xaxis.grid(
         b=True, which='major', color='.55', linestyle='--')
     return ax
+
+
+def set_labels(ax, xlabel, ylabel, title=''):
+    """
+    Input ax and names of xlabel and ylabel to return a
+    prettified x axis and y axis label.
+
+    :param: ax (matplotlib.axes) - original axis
+    :param: xlabel (str) - x axis label
+    :param: ylabel (str) - y axis label
+    :param: title (str) - title of plot
+    """
+    ax.set_xlabel(xlabel, fontsize=16.5)
+    ax.set_ylabel(ylabel, fontsize=16.5)
+    ax.set_title(title, fontsize=21, y=1.03, color='.50')
+
+
+def set_legend(ax,
+               color='0.5',
+               fontsize='16.5',
+               loc='best',
+               ncol=4,
+               frameon=False):
+    """
+    Input ax and plt to return a prettified legend. Must set
+    names of labels separately though.
+
+    :param: ax (matplotlib.axes) - original axis\
+    :param: color (str) - matplotlib abbrieviation of color
+    :param: fontsize (str) - font size of legend text
+    :param: loc (str) - matplotlib names of locations
+    :param: ncol (int) - number of legend columns
+    :param: frameon (boolean) - switch for having a box around legend
+    """
+    leg = ax.legend(loc=loc, ncol=ncol, fontsize=fontsize, frameon=frameon)
+    for text in leg.get_texts():
+        plt.setp(text, color=color)

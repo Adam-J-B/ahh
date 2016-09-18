@@ -4,7 +4,7 @@ __author__ = 'huang.andrew12@gmail.com'
 __copyright__ = 'Andrew Huang'
 
 setup(name='ahh',
-      version='0.0.6',
+      version='0.0.7',
       packages=['ahh'],
       install_requires=[
                        'numpy==1.8.0',

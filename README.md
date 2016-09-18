@@ -50,6 +50,9 @@ Basically don't hold me accountable if something goes wrong; go read the license
 ### ahh/ext.py - extra functions:
     - ahh: prints out a variable summary
         - prints type, unnested type, length, and shape of a variable.
+        - prints max and min of the variable
+        - option to control how many numbers are printed
+        - option to print the center of the array
         - option to title the print output
     - p: prints a mark in the terminal to help debug
         - option to differentiate marks
@@ -60,6 +63,7 @@ Basically don't hold me accountable if something goes wrong; go read the license
         - option to convert input west longitudes to east or vice versa
     - read_nc: read netCDF4 file
         - grabs the opened dataset, time, latitude, and longitude arrays
+    - dt2jul: convert datetime to julian day
 
 ### vis.py - visualization functions:
     - plot: effortlessly make beautiful plots
@@ -71,8 +75,17 @@ Basically don't hold me accountable if something goes wrong; go read the license
         - datetimes supported for x-axis
     - global_map: map out data
     - prettify_plot: effortlessly make your own plot pretty
+    - set_labels: set and prettify x and y labels
+        - may also set title
+    - set_legend: create a legend
 
 ## CHANGELOG:
+### - v0.0.7
+    - Overhauled ext.ahh() to produce more info
+    - Renamed ext.ahh(name='old') to ext.ahh(n='new')
+    - Can add pretty labels and legends separately
+    - If ext.get_idc() is empty, print warning message
+    - Added datetime to Julian day conversion function
 ### - v0.0.6
     - Debug your code easier with ext.p()!
     - Bug fix with xlim not working properly in vis.plot()
@@ -120,10 +133,14 @@ Basically don't hold me accountable if something goes wrong; go read the license
 - More conversions!
 - More scientific/statistical functions!
 - Add scalability in vis.plot()
+- Remove clutter (if, else) from vis.plot()
 - Add more plots functionality in vis.plot()
 - Put more work into vis.global_map()
+- Replace basemap with cartopy
+- Input latitudes and longitudes and locate those values into ahh
+- Possibly add read csv capabilities?
+- Update sci functions to be more flexible and reflect new changes
 - Fix the known issues listed below!
-- Update sci functions to reflect new changes
 
 ## KNOWN ISSUES:
-- vis.plot() "minor" input is useable, but returns inconsistent font and color.
+- vis.plot() "minor" input is useable, but returns inconsistent font and color
