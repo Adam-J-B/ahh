@@ -34,6 +34,7 @@ Basically don't hold me accountable if something goes wrong; go read the license
     - concat_nc: combines multiple netCDF4 files with a common pattern name
         - capability to append/reference record dimension properly
         - option to select directory for files to be read from
+
 ### ahh/sci.py - science functions:
     - get_uac: get the uncentered anomaly correlation of grid
     - get_cac: get the centered anomaly correlation of grid
@@ -63,7 +64,13 @@ Basically don't hold me accountable if something goes wrong; go read the license
         - option to convert input west longitudes to east or vice versa
     - read_nc: read netCDF4 file
         - grabs the opened dataset, time, latitude, and longitude arrays
-    - dt2jul: convert datetime to julian day
+    -export_nc: export netCDF file
+        - supports up to four dimensions
+        - supports unlimited variables
+    - create_dt_arr: from a Julian day array, create a datetime array
+    - dt2jul: convert datetime to Kulian day
+    - jul2dt: convert Julian day to datetime
+    - dtnow: get the utc datetime now
 
 ### vis.py - visualization functions:
     - plot: effortlessly make beautiful plots
@@ -80,6 +87,11 @@ Basically don't hold me accountable if something goes wrong; go read the license
     - set_legend: create a legend
 
 ## CHANGELOG:
+### - v0.0.8
+    - Updated ext.ahh() to work with multidimension arrays
+    - Added new ext.export_nc function!
+    - Convert between Julian day to datetime effortlessly!
+    - Quickly get datetime now with ext.dtnow()!
 ### - v0.0.7
     - Overhauled ext.ahh() to produce more info
     - Renamed ext.ahh(name='old') to ext.ahh(n='new')
@@ -141,6 +153,9 @@ Basically don't hold me accountable if something goes wrong; go read the license
 - Possibly add read csv capabilities?
 - Update sci functions to be more flexible and reflect new changes
 - Fix the known issues listed below!
+- Write new example usage for new functions
+- Export netcdf to specific directory
+- Optimize functions
 
 ## KNOWN ISSUES:
 - vis.plot() "minor" input is useable, but returns inconsistent font and color
