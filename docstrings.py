@@ -165,7 +165,7 @@ def export_nc(lat, lon, var_list, name_list, units_list,
               out='untitled', time=None, z=None, description=None,
               format='NETCDF3_64BIT', time_name='time', z_name='z',
               lat_units='degrees_north', lon_units='degrees_east',
-              time_units='unknown', z_units='unknown', 
+              time_units='unknown', z_units='unknown',
               time_calendar='unknown'):
     """
     Exports a netCDF3 file.
@@ -267,13 +267,25 @@ def get_rmse(obs, fcst, idc):
 
 
 def convert(variable,
-            mm2in=True,
-            c2f=True,
-            c2k=True,
-            f2k=True,
-            mps2mph=True,
-            reverse=True
+            mm2in=False,
+            c2f=False,
+            c2k=False,
+            f2k=False,
+            mps2mph=False,
+            reverse=False
             ):
+    """
+    Converts the variable from one unit to another.
+
+    :param: variable (np.array) - variable values
+    :param: mm2in (boolean) - millimeters to inches
+    :param: c2f (boolean) - Celsius to Fahrenheit
+    :param: c2k (boolean) - Celsius to Kelvin
+    :param: f2k (boolean) - Fahrenheit to Kelvin
+    :param: mps2mph (boolean) - meters per second to miles per hour
+    :param: reverse (boolean) - reverses the conversions (mm2in becomes in2mm)
+    :return: conv_var (np.array) - converted variable values
+    """
 
 
 def get_norm_anom(data_avg):

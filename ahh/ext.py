@@ -3,6 +3,7 @@ import pandas as pd
 from netCDF4 import Dataset, num2date
 import datetime
 import calendar
+import os
 
 __author__ = 'huang.andrew12@gmail.com'
 __copyright__ = 'Andrew Huang'
@@ -359,7 +360,7 @@ def export_nc(lat, lon, var_list, name_list, units_list,
               out='untitled', time=None, z=None, description=None,
               format='NETCDF3_64BIT', time_name='time', z_name='z',
               lat_units='degrees_north', lon_units='degrees_east',
-              time_units='unknown', z_units='unknown', 
+              time_units='unknown', z_units='unknown',
               time_calendar='unknown'):
     """
     Exports a netCDF3 file.
@@ -424,15 +425,24 @@ def export_nc(lat, lon, var_list, name_list, units_list,
 
     for var, name, units in zip(var_list, name_list, units_list):
         if time is not None and z is not None:
-            fi_out_var = fi_out.createVariable(name, 'f4', (time_name, z_name, 'lat', 'lon'))
+            fi_out_var = fi_out.createVariable(name, 'f4',
+                                               (
+                                                time_name,
+                                                z_name,
+                                                'lat',
+                                                'lon'
+                                                )
+                                               )
             fi_out_var.units = units
             fi_out_var[:, :, :, :] = var
         elif z is not None:
-            fi_out_var = fi_out.createVariable(name, 'f4', (z_name, 'lat', 'lon'))
+            fi_out_var = fi_out.createVariable(name, 'f4',
+                                               (z_name, 'lat', 'lon'))
             fi_out_var.units = units
             fi_out_var[:, :, :] = var
         elif time is not None:
-            fi_out_var = fi_out.createVariable(name, 'f4', (time_name, 'lat', 'lon'))
+            fi_out_var = fi_out.createVariable(name, 'f4',
+                                               (time_name, 'lat', 'lon'))
             fi_out_var.units = units
             fi_out_var[:, :] = var
 
