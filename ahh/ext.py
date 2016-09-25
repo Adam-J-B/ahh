@@ -1,19 +1,35 @@
 import numpy as np
+import pandas as pd
 from netCDF4 import Dataset, num2date
+import datetime
+import calendar
 
 __author__ = 'huang.andrew12@gmail.com'
 __copyright__ = 'Andrew Huang'
 
 
+class OutOfRange(Exception):
+    pass
+
+
+class FileExists(Exception):
+    pass
+
+
 def ahh(variable,
         n='ahh',
-        center=0,
+        center=3,
         offset=0,
         threshold=15,
         precision=2,
         edgeitems=5,
         suppress=True,
-        fillval=9999.):
+        fillval_high=9999.,
+        fillval_low=-9999.,
+        snippet=True,
+        time=0,
+        level=0,
+        ):
     """
     Explores type, unnested type, length, and shape of a variable.
     Can optionally include a name to differentiate from other 'ahh's.
@@ -26,8 +42,13 @@ def ahh(variable,
     :param: precision (int) - number of decimal places
     :param: edgeitems (int) - how many numbers to print on the edge
     :param: suppress (boolean) - whether to suppress scientific notation
-    :param: fillval (float) - anything equal/greater than fill value will
-                              not be included in the max and min
+    :param: fillval_high (float) - anything equal/greater than fill value will
+                              not be included in the max
+    :param: fillval_low (float) - anything equal/less than fill value will
+                          not be included in the min
+    :param: snippet (boolean) - whether to exclude snippet of values
+    :param: time (integer) - index of time to print in snippet
+    :param: level (integer) - index of time to print in snippet
     """
     variable = np.array(variable)
     try:
@@ -38,20 +59,36 @@ def ahh(variable,
     type_of_var = type(variable)
     type_of_var2 = None
     shape_of_var = None
+    len_shape_of_var = 1
     max_of_var = None
     min_of_var = None
 
     try:
         shape_of_var = np.array(variable).shape
+        len_shape_of_var = len(shape_of_var)
+        if len_shape_of_var == 3:
+            center_lat_of_var = shape_of_var[1] / 2
+            center_lon_of_var = shape_of_var[2] / 2
+        elif len_shape_of_var == 4:
+            center_lat_of_var = shape_of_var[2] / 2
+            center_lon_of_var = shape_of_var[3] / 2
+        else:
+            center_lat_of_var = None
+            center_lon_of_var = None
     except:
         pass
 
     try:
-        fillval_idc = np.where(variable < fillval)
-        max_of_var = np.max(variable[fillval_idc])
-        min_of_var = np.min(variable[fillval_idc])
+        variable_ravel = np.ravel(variable)
+        fillval_idc = np.where(
+                              (variable_ravel < fillval_high) &
+                              (variable_ravel > fillval_low)
+                              )
+        variable_clean = variable_ravel[fillval_idc]
+        max_of_var = variable_clean.max()
+        min_of_var = variable_clean.min()
     except:
-        pass
+        print('Unable to get the max/min values!')
 
     if 'Masked' in str(type_of_var):
         variable = variable[~variable.mask]
@@ -83,19 +120,62 @@ def ahh(variable,
     print('         Minimum: {}'.format(min_of_var))
     print('')
 
-    print('Snippet of values:')
-    print(np.array(variable))
+    if snippet:
+        print('Snippet of values:')
+        if len_shape_of_var == 3:
+            print(np.array(variable[time, :, :])[0])
+        elif len_shape_of_var == 4:
+            print(np.array(variable[time, level, :, :])[0])
+        else:
+            print(np.array(variable))
+    else:
+        pass
     if center != 0:
         try:
-            print('Values around indice {}:'
-                  .format(center_of_var + offset))
-            print(np.array(
-                          variable[
-                                  center_of_var - center + offset:
-                                  center_of_var + center + offset
-                                  ]
-                          )
-                  )
+
+            if len_shape_of_var == 3:
+                print('Values around lat indice {lat}, lon indice {lon}:'
+                      .format(lat=center_lat_of_var + offset,
+                              lon=center_lon_of_var + offset
+                              )
+                      )
+                print(np.array(
+                              variable[
+                                      time,
+                                      center_lat_of_var - center + offset:
+                                      center_lat_of_var + center + offset,
+                                      center_lon_of_var - center + offset:
+                                      center_lon_of_var + center + offset,
+                                      ][0]
+                              )
+                      )
+            elif len_shape_of_var == 4:
+                print('Values around lat indice {lat}, lon indice {lon}:'
+                      .format(lat=center_lat_of_var + offset,
+                              lon=center_lon_of_var + offset
+                              )
+                      )
+                print(np.array(
+                              variable[
+                                      time,
+                                      level,
+                                      center_lat_of_var - center + offset:
+                                      center_lat_of_var + center + offset,
+                                      center_lon_of_var - center + offset:
+                                      center_lon_of_var + center + offset,
+                                      ][0]
+                              )
+                      )
+            else:
+                print('Values around indice {}:'
+                      .format(center_of_var + offset))
+                print(np.array(
+                              variable[
+                                      center_of_var - center + offset:
+                                      center_of_var + center + offset
+                                      ]
+                              )
+                      )
         except:
             print('Unable to get center of variable!')
         print('')
@@ -275,6 +355,90 @@ def read_nc(file_path,
         return time, lats, lons
 
 
+def export_nc(lat, lon, var_list, name_list, units_list,
+              out='untitled', time=None, z=None, description=None,
+              format='NETCDF3_64BIT', time_name='time', z_name='z',
+              lat_units='degrees_north', lon_units='degrees_east',
+              time_units='unknown', z_units='unknown', 
+              time_calendar='unknown'):
+    """
+    Exports a netCDF3 file.
+
+    :param: lat (np.array) - array of latitudes
+    :param: lon (np.array) - array of longitudes
+    :param: var_list (list) - list of variables in np.array
+    :param: name_list (list) - list of variable names in string
+    :param: units_list (list) - list of units names in string
+    :param: out (str) - name of output file
+    :param: time (np.array) - time/date variable
+    :param: z (np.array) - z/level/depth variable
+    :param: description (str) - description of data
+    :param: format (str) - output format
+    :param: time_name (str) - what to name the time variable
+    :param: z_name (str) - what to name the z variable
+    :param: lat_units (str) - units of latitude
+    :param: lon_units (str) - units of longitude
+    :param: time_units (str) - units of time
+    :param: z_units (str) - units of z
+    :param: time_calendar (str) - type of calendar
+    """
+
+    output_fi_name = '{}.nc'.format(out)
+
+    if os.path.isfile(output_fi_name):
+        print('\nOutput file already exists; please select a out name!\n')
+        raise(FileExists)
+
+    fi_out = Dataset(output_fi_name, 'w', format=format)
+
+    if description is not None:
+        fi_out.description = description
+
+    if time is not None:
+        fi_out.createDimension(time_name, len(time))
+        fi_out_time = fi_out.createVariable(time_name, 'f4', (time_name,))
+        fi_out_time.units = time_units
+        if time_units is 'unknown':
+            print('\nPlease set time_units; defaulting to unknown\n')
+        if time_calendar is not 'unknown':
+            fi_out_time.calendar = time_calendar
+        fi_out_time[:] = time
+
+    if z is not None:
+        fi_out.createDimension(z_name, len(z))
+        fi_out_z = fi_out.createVariable(z_name, 'f4', (z_name,))
+        fi_out_z.units = z_units
+        if z_units == 'unknown':
+            print('\nPlease set z_units; defaulting to unknown\n')
+        fi_out_z[:] = z
+
+    fi_out.createDimension('lat', len(lat))
+    fi_out_lat = fi_out.createVariable('latitude', 'f4', ('lat',))
+    fi_out_lat.units = lat_units
+    fi_out_lat[:] = lat
+
+    fi_out.createDimension('lon', len(lon))
+    fi_out_lon = fi_out.createVariable('longitude', 'f4', ('lon',))
+    fi_out_lon.units = lon_units
+    fi_out_lon[:] = lon
+
+    for var, name, units in zip(var_list, name_list, units_list):
+        if time is not None and z is not None:
+            fi_out_var = fi_out.createVariable(name, 'f4', (time_name, z_name, 'lat', 'lon'))
+            fi_out_var.units = units
+            fi_out_var[:, :, :, :] = var
+        elif z is not None:
+            fi_out_var = fi_out.createVariable(name, 'f4', (z_name, 'lat', 'lon'))
+            fi_out_var.units = units
+            fi_out_var[:, :, :] = var
+        elif time is not None:
+            fi_out_var = fi_out.createVariable(name, 'f4', (time_name, 'lat', 'lon'))
+            fi_out_var.units = units
+            fi_out_var[:, :] = var
+
+    fi_out.close()
+
+
 def create_dt_arr(time_var, calendar='standard'):
     """
     Creates a datetime array based on an unopened time variable.
@@ -300,3 +464,36 @@ def dt2jul(dt):
     :return: jday (int) - julian day
     """
     return dt.timetuple().tm_yday
+
+
+def jul2dt(jday, year):
+    """
+    Find the datetime from a julian date.
+
+    :param: jday (int) - julian day
+    :param: year (int) - year to determine if leap
+    :return: dt (datetime.datetime) - respective datetime
+    """
+    if calendar.isleap(year):
+        cal = pd.read_csv('./data/jd_cal_leap.csv')
+        if jday < 1 or jday > 366:
+            print('\nInput Julian day is out of 1-366 range!\n')
+            raise(OutOfRange)
+    else:
+        if jday < 1 or jday > 365:
+            print('\nInput Julian day is out of 1-365 range!\n')
+            raise(OutOfRange)
+        cal = pd.read_csv('./data/jd_cal.csv')
+    jday_idc = np.where(cal == jday)
+    mth = jday_idc[1][0] + 1
+    day = jday_idc[0][0] + 1
+    return datetime.datetime(year, mth, day)
+
+
+def dtnow():
+    """
+    Get current UTC in datetime.
+
+    :return: utcnow (datetime.datetime) - UTC now in datetime
+    """
+    return datetime.datetime.utcnow()
