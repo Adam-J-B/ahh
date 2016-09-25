@@ -54,13 +54,18 @@ def concat_nc(glob_str, output_fi, directory='./', rec_dim=None):
 
 def ahh(variable,
         n='ahh',
-        center=0,
+        center=3,
         offset=0,
         threshold=15,
         precision=2,
         edgeitems=5,
         suppress=True,
-        fillval=9999.):
+        fillval_high=9999.,
+        fillval_low=-9999.,
+        snippet=True,
+        time=0,
+        level=0,
+        ):
     """
     Explores type, unnested type, length, and shape of a variable.
     Can optionally include a name to differentiate from other 'ahh's.
@@ -73,8 +78,13 @@ def ahh(variable,
     :param: precision (int) - number of decimal places
     :param: edgeitems (int) - how many numbers to print on the edge
     :param: suppress (boolean) - whether to suppress scientific notation
-    :param: fillval (float) - anything equal/greater than fill value will
-                              not be included in the max and min
+    :param: fillval_high (float) - anything equal/greater than fill value will
+                              not be included in the max
+    :param: fillval_low (float) - anything equal/less than fill value will
+                          not be included in the min
+    :param: snippet (boolean) - whether to exclude snippet of values
+    :param: time (integer) - index of time to print in snippet
+    :param: level (integer) - index of time to print in snippet
     """
 
 
@@ -151,6 +161,35 @@ def read_nc(file_path,
     """
 
 
+def export_nc(lat, lon, var_list, name_list, units_list,
+              out='untitled', time=None, z=None, description=None,
+              format='NETCDF3_64BIT', time_name='time', z_name='z',
+              lat_units='degrees_north', lon_units='degrees_east',
+              time_units='unknown', z_units='unknown', 
+              time_calendar='unknown'):
+    """
+    Exports a netCDF3 file.
+
+    :param: lat (np.array) - array of latitudes
+    :param: lon (np.array) - array of longitudes
+    :param: var_list (list) - list of variables in np.array
+    :param: name_list (list) - list of variable names in string
+    :param: units_list (list) - list of units names in string
+    :param: out (str) - name of output file
+    :param: time (np.array) - time/date variable
+    :param: z (np.array) - z/level/depth variable
+    :param: description (str) - description of data
+    :param: format (str) - output format
+    :param: time_name (str) - what to name the time variable
+    :param: z_name (str) - what to name the z variable
+    :param: lat_units (str) - units of latitude
+    :param: lon_units (str) - units of longitude
+    :param: time_units (str) - units of time
+    :param: z_units (str) - units of z
+    :param: time_calendar (str) - type of calendar
+    """
+
+
 def create_dt_arr(time_var, calendar='standard'):
     """
     Creates a datetime array based on an unopened time variable.
@@ -167,6 +206,24 @@ def dt2jul(dt):
 
     :param: dt (datetime.datetime/int) - datetime
     :return: jday (int) - julian day
+    """
+
+
+def jul2dt(jday, year):
+    """
+    Find the datetime from a julian date.
+
+    :param: jday (int) - julian day
+    :param: year (int) - year to determine if leap
+    :return: dt (datetime.datetime) - respective datetime
+    """
+
+
+def dtnow():
+    """
+    Get current UTC in datetime.
+
+    :return: utcnow (datetime.datetime) - UTC now in datetime
     """
 
 
@@ -346,23 +403,6 @@ def prettify_plot(ax):
     :param: ax (matplotlib.axes) - original axis
     :return: ax (matplotlib.axes) - prettified axis
     """
-    ax.spines["top"].set_visible(False)
-    ax.spines["bottom"].set_visible(False)
-    ax.spines["right"].set_visible(False)
-    ax.spines["left"].set_visible(False)
-    ax.get_xaxis().tick_bottom()
-    ax.get_yaxis().tick_left()
-    ax.xaxis.label.set_color('.4')
-    ax.yaxis.label.set_color('.4')
-    ax.tick_params(
-        axis='x', which='both', colors='.5', labelsize=12)
-    ax.tick_params(
-        axis='y', which='both', colors='.5', labelsize=12)
-    ax.yaxis.grid(
-        b=True, which='major', color='.55', linestyle='--')
-    ax.xaxis.grid(
-        b=True, which='major', color='.55', linestyle='--')
-    return ax
 
 
 def set_labels(ax, xlabel, ylabel, title=''):
