@@ -306,7 +306,7 @@ def read_nc(file_path,
             extra2=None,
             extra3=None,
             original=False,
-            already=True):
+            already=False):
     """
     Reads the netCDF4 file's lats, lons, and time and returns those
     parameters in addition to an opened netCDF4 dataset.
