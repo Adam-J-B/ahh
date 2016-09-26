@@ -51,134 +51,139 @@ def ahh(variable,
     :param: time (integer) - index of time to print in snippet
     :param: level (integer) - index of time to print in snippet
     """
-    variable = np.array(variable)
     try:
-        len_of_var = len(variable)
-    except:
-        len_of_var = None
-    center_of_var = len(variable)/2
-    type_of_var = type(variable)
-    type_of_var2 = None
-    shape_of_var = None
-    len_shape_of_var = 1
-    max_of_var = None
-    min_of_var = None
-
-    try:
-        shape_of_var = np.array(variable).shape
-        len_shape_of_var = len(shape_of_var)
-        if len_shape_of_var == 3:
-            center_lat_of_var = shape_of_var[1] / 2
-            center_lon_of_var = shape_of_var[2] / 2
-        elif len_shape_of_var == 4:
-            center_lat_of_var = shape_of_var[2] / 2
-            center_lon_of_var = shape_of_var[3] / 2
-        else:
-            center_lat_of_var = None
-            center_lon_of_var = None
-    except:
-        pass
-
-    try:
-        variable_ravel = np.ravel(variable)
-        fillval_idc = np.where(
-                              (variable_ravel < fillval_high) &
-                              (variable_ravel > fillval_low)
-                              )
-        variable_clean = variable_ravel[fillval_idc]
-        max_of_var = variable_clean.max()
-        min_of_var = variable_clean.min()
-    except:
-        print('Unable to get the max/min values!')
-
-    if 'Masked' in str(type_of_var):
-        variable = variable[~variable.mask]
-        center_of_var = len(variable)/2
-        print('')
-        print('NOTE! This array has been temporarily reshaped to 1D to show')
-        print('only non-masked values. Therefore, if you are printing out')
-        print('the center, it may show an anomalously large indice!')
-
-    try:
-        type_of_var2 = type(variable.flatten()[0])
-    except:
-        pass
-
-    np.set_printoptions(
-                        suppress=suppress,
-                        threshold=threshold,
-                        precision=precision,
-                        edgeitems=edgeitems
-                        )
-
-    print('')
-    print('            Name: {}'.format(n))
-    print('Overarching Type: {}'.format(type_of_var))
-    print('   Unnested Type: {}'.format(type_of_var2))
-    print('  Original Shape: {}'.format(shape_of_var))
-    print('          Length: {}'.format(len_of_var))
-    print('         Maximum: {}'.format(max_of_var))
-    print('         Minimum: {}'.format(min_of_var))
-    print('')
-
-    if snippet:
-        print('Snippet of values:')
-        if len_shape_of_var == 3:
-            print(np.array(variable[time, :, :])[0])
-        elif len_shape_of_var == 4:
-            print(np.array(variable[time, level, :, :])[0])
-        else:
-            print(np.array(variable))
-    else:
-        pass
-    if center != 0:
+        variable = np.array(variable)
         try:
-
-            if len_shape_of_var == 3:
-                print('Values around lat indice {lat}, lon indice {lon}:'
-                      .format(lat=center_lat_of_var + offset,
-                              lon=center_lon_of_var + offset
-                              )
-                      )
-                print(np.array(
-                              variable[
-                                      time,
-                                      center_lat_of_var - center + offset:
-                                      center_lat_of_var + center + offset,
-                                      center_lon_of_var - center + offset:
-                                      center_lon_of_var + center + offset,
-                                      ][0]
-                              )
-                      )
-            elif len_shape_of_var == 4:
-                print('Values around lat indice {lat}, lon indice {lon}:'
-                      .format(lat=center_lat_of_var + offset,
-                              lon=center_lon_of_var + offset
-                              )
-                      )
-                print(np.array(
-                              variable[
-                                      time,
-                                      level,
-                                      center_lat_of_var - center + offset:
-                                      center_lat_of_var + center + offset,
-                                      center_lon_of_var - center + offset:
-                                      center_lon_of_var + center + offset,
-                                      ][0]
-                              )
-                      )
-            else:
-                print('Values around indice {}:'
-                      .format(center_of_var + offset))
-                print(np.array(
-                              variable[
-                                      center_of_var - center + offset:
-                                      center_of_var + center + offset
-                                      ]
-                              )
-                      )
+            len_of_var = len(variable)
         except:
-            print('Unable to get center of variable!')
+            len_of_var = None
+        center_of_var = len(variable)/2
+        type_of_var = type(variable)
+        type_of_var2 = None
+        shape_of_var = None
+        len_shape_of_var = 1
+        max_of_var = None
+        min_of_var = None
+    
+        try:
+            shape_of_var = np.array(variable).shape
+            len_shape_of_var = len(shape_of_var)
+            if len_shape_of_var == 3:
+                center_lat_of_var = shape_of_var[1] / 2
+                center_lon_of_var = shape_of_var[2] / 2
+            elif len_shape_of_var == 4:
+                center_lat_of_var = shape_of_var[2] / 2
+                center_lon_of_var = shape_of_var[3] / 2
+            else:
+                center_lat_of_var = None
+                center_lon_of_var = None
+        except:
+            pass
+    
+        try:
+            variable_ravel = np.ravel(variable)
+            fillval_idc = np.where(
+                                  (variable_ravel < fillval_high) &
+                                  (variable_ravel > fillval_low)
+                                  )
+            variable_clean = variable_ravel[fillval_idc]
+            max_of_var = variable_clean.max()
+            min_of_var = variable_clean.min()
+        except:
+            print('Unable to get the max/min values!')
+    
+        if 'Masked' in str(type_of_var):
+            variable = variable[~variable.mask]
+            center_of_var = len(variable)/2
+            print('')
+            print('NOTE! This array has been temporarily reshaped to 1D to show')
+            print('only non-masked values. Therefore, if you are printing out')
+            print('the center, it may show an anomalously large indice!')
+    
+        try:
+            type_of_var2 = type(variable.flatten()[0])
+        except:
+            pass
+    
+        np.set_printoptions(
+                            suppress=suppress,
+                            threshold=threshold,
+                            precision=precision,
+                            edgeitems=edgeitems
+                            )
+    
+        print('')
+        print('            Name: {}'.format(n))
+        print('Overarching Type: {}'.format(type_of_var))
+        print('   Unnested Type: {}'.format(type_of_var2))
+        print('  Original Shape: {}'.format(shape_of_var))
+        print('          Length: {}'.format(len_of_var))
+        print('         Maximum: {}'.format(max_of_var))
+        print('         Minimum: {}'.format(min_of_var))
+        print('')
+    
+        if snippet:
+            print('Snippet of values:')
+            if len_shape_of_var == 3:
+                print(np.array(variable[time, :, :])[0])
+            elif len_shape_of_var == 4:
+                print(np.array(variable[time, level, :, :])[0])
+            else:
+                print(np.array(variable))
+        else:
+            pass
+        if center != 0:
+            try:
+    
+                if len_shape_of_var == 3:
+                    print('Values around lat indice {lat}, lon indice {lon}:'
+                          .format(lat=center_lat_of_var + offset,
+                                  lon=center_lon_of_var + offset
+                                  )
+                          )
+                    print(np.array(
+                                  variable[
+                                          time,
+                                          center_lat_of_var - center + offset:
+                                          center_lat_of_var + center + offset,
+                                          center_lon_of_var - center + offset:
+                                          center_lon_of_var + center + offset,
+                                          ][0]
+                                  )
+                          )
+                elif len_shape_of_var == 4:
+                    print('Values around lat indice {lat}, lon indice {lon}:'
+                          .format(lat=center_lat_of_var + offset,
+                                  lon=center_lon_of_var + offset
+                                  )
+                          )
+                    print(np.array(
+                                  variable[
+                                          time,
+                                          level,
+                                          center_lat_of_var - center + offset:
+                                          center_lat_of_var + center + offset,
+                                          center_lon_of_var - center + offset:
+                                          center_lon_of_var + center + offset,
+                                          ][0]
+                                  )
+                          )
+                else:
+                    print('Values around indice {}:'
+                          .format(center_of_var + offset))
+                    print(np.array(
+                                  variable[
+                                          center_of_var - center + offset:
+                                          center_of_var + center + offset
+                                          ]
+                                  )
+                          )
+            except:
+                print('Unable to get center of variable!')
+            print('')
+    except Exception as e:
+        print('\nUnable to ahh due to this:')
+        print(e)
         print('')
 
 
@@ -300,7 +305,8 @@ def read_nc(file_path,
             extra=None,
             extra2=None,
             extra3=None,
-            original=False):
+            original=False,
+            already=True):
     """
     Reads the netCDF4 file's lats, lons, and time and returns those
     parameters in addition to an opened netCDF4 dataset.
@@ -311,6 +317,8 @@ def read_nc(file_path,
     :param: num2date (boolean) - converts time to datetime
     :param: extra2 (str) - return a second variable given name of variable
     :param: extra3 (str) - return a third variable given name of variable
+    :param: already (boolean) - whether lat, lon, time is already imported
+                                if so, only return the extras
     :return: fi_in, time, lats, lons
             (netCDF4.Dataset, np.array, np.array, np.array)
             netCDF4 dataset, time array, latitude array, longitude array
@@ -318,42 +326,53 @@ def read_nc(file_path,
     fi_in = Dataset(file_path, mode='r')
     if peek:
         print(fi_in)
-    try:
-        lats = fi_in.variables[lat][:]
-        lons = fi_in.variables[lon][:]
-    except:
-        print('Unable to find the given lat, lon variable name!')
-        print('Will try the variable names: "latitude" and "longitude"')
-        try:
-            lats = fi_in.variables['latitude'][:]
-            lons = fi_in.variables['longitude'][:]
-        except:
-            print('Unable to find any lat, lon variable; returning None')
-            lats = None
-            lons = None
-    try:
-        if num2date:
-            time_var = fi_in.variables[time]
-            time = create_dt_arr(time_var)
-        else:
-            time = fi_in.variables[time][:]
-    except:
-        print('Unable to create time variable; returning None')
-        time = None
-    if extra is not None:
-        extra_var = fi_in.variables[extra][:]
-        if extra2 is not None:
-            extra_var2 = fi_in.variables[extra2][:]
-            if extra3 is not None:
-                extra_var3 = fi_in.variables[extra3][:]
-                return time, lats, lons, extra_var, extra_var2, extra_var3
-            return time, lats, lons, extra_var, extra_var2
-        return time, lats, lons, extra_var
-    if original:
-        return fi_in, time, lats, lons
+    if already:
+        if extra is not None:
+            extra_var = fi_in.variables[extra][:]
+            if extra2 is not None:
+                extra_var2 = fi_in.variables[extra2][:]
+                if extra3 is not None:
+                    extra_var3 = fi_in.variables[extra3][:]
+                    return extra_var, extra_var2, extra_var3
+                return extra_var, extra_var2
+            return extra_var
     else:
-        fi_in.close()
-        return time, lats, lons
+        try:
+            lats = fi_in.variables[lat][:]
+            lons = fi_in.variables[lon][:]
+        except:
+            print('Unable to find the given lat, lon variable name!')
+            print('Will try the variable names: "latitude" and "longitude"')
+            try:
+                lats = fi_in.variables['latitude'][:]
+                lons = fi_in.variables['longitude'][:]
+            except:
+                print('Unable to find any lat, lon variable; returning None')
+                lats = None
+                lons = None
+        try:
+            if num2date:
+                time_var = fi_in.variables[time]
+                time = create_dt_arr(time_var)
+            else:
+                time = fi_in.variables[time][:]
+        except:
+            print('Unable to create time variable; returning None')
+            time = None
+        if extra is not None:
+            extra_var = fi_in.variables[extra][:]
+            if extra2 is not None:
+                extra_var2 = fi_in.variables[extra2][:]
+                if extra3 is not None:
+                    extra_var3 = fi_in.variables[extra3][:]
+                    return time, lats, lons, extra_var, extra_var2, extra_var3
+                return time, lats, lons, extra_var, extra_var2
+            return time, lats, lons, extra_var
+        if original:
+            return fi_in, time, lats, lons
+        else:
+            fi_in.close()
+            return time, lats, lons
 
 
 def export_nc(lat, lon, var_list, name_list, units_list,
