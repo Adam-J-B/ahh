@@ -26,7 +26,7 @@ Basically don't hold me accountable if something goes wrong; go read the license
 
 ## CONTAINS:
 
-### ahh/pre.py - pre-analysis fucnctions:
+### ahh/pre.py - pre-analysis functions:
     - wget_fi: downloads multiple files with a common pattern name
         - option to put in username and password
         - option to select directory for files to be downloaded in
@@ -87,6 +87,9 @@ Basically don't hold me accountable if something goes wrong; go read the license
     - set_legend: create a legend
 
 ## CHANGELOG:
+### - v0.0.9
+    - Exception handling for ext.ahh()
+    - Added input to only read extras for ahh.read_nc()
 ### - v0.0.8
     - Updated ext.ahh() to work with multidimension arrays
     - Added new ext.export_nc function!

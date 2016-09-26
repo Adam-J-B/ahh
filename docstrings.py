@@ -144,7 +144,8 @@ def read_nc(file_path,
             extra=None,
             extra2=None,
             extra3=None,
-            original=False):
+            original=False,
+            already=True):
     """
     Reads the netCDF4 file's lats, lons, and time and returns those
     parameters in addition to an opened netCDF4 dataset.
@@ -155,6 +156,8 @@ def read_nc(file_path,
     :param: num2date (boolean) - converts time to datetime
     :param: extra2 (str) - return a second variable given name of variable
     :param: extra3 (str) - return a third variable given name of variable
+    :param: already (boolean) - whether lat, lon, time is already imported
+                                if so, only return the extras
     :return: fi_in, time, lats, lons
             (netCDF4.Dataset, np.array, np.array, np.array)
             netCDF4 dataset, time array, latitude array, longitude array
