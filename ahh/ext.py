@@ -64,7 +64,7 @@ def ahh(variable,
         len_shape_of_var = 1
         max_of_var = None
         min_of_var = None
-    
+
         try:
             shape_of_var = np.array(variable).shape
             len_shape_of_var = len(shape_of_var)
@@ -79,7 +79,7 @@ def ahh(variable,
                 center_lon_of_var = None
         except:
             pass
-    
+
         try:
             variable_ravel = np.ravel(variable)
             fillval_idc = np.where(
@@ -91,27 +91,27 @@ def ahh(variable,
             min_of_var = variable_clean.min()
         except:
             print('Unable to get the max/min values!')
-    
+
         if 'Masked' in str(type_of_var):
             variable = variable[~variable.mask]
             center_of_var = len(variable)/2
             print('')
-            print('NOTE! This array has been temporarily reshaped to 1D to show')
+            print('This array has been temporarily reshaped to 1D to show')
             print('only non-masked values. Therefore, if you are printing out')
             print('the center, it may show an anomalously large indice!')
-    
+
         try:
             type_of_var2 = type(variable.flatten()[0])
         except:
             pass
-    
+
         np.set_printoptions(
                             suppress=suppress,
                             threshold=threshold,
                             precision=precision,
                             edgeitems=edgeitems
                             )
-    
+
         print('')
         print('            Name: {}'.format(n))
         print('Overarching Type: {}'.format(type_of_var))
@@ -121,7 +121,7 @@ def ahh(variable,
         print('         Maximum: {}'.format(max_of_var))
         print('         Minimum: {}'.format(min_of_var))
         print('')
-    
+
         if snippet:
             print('Snippet of values:')
             if len_shape_of_var == 3:
@@ -134,7 +134,7 @@ def ahh(variable,
             pass
         if center != 0:
             try:
-    
+
                 if len_shape_of_var == 3:
                     print('Values around lat indice {lat}, lon indice {lon}:'
                           .format(lat=center_lat_of_var + offset,
