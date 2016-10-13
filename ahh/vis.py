@@ -1,9 +1,14 @@
+import cartopy.crs as ccrs
+import cartopy.feature as cfeature
+from cartopy.mpl.gridliner import (
+                                  LONGITUDE_FORMATTER,
+                                  LATITUDE_FORMATTER
+                                  )
 import matplotlib
 matplotlib.use('agg')
 import matplotlib.pyplot as plt
 from matplotlib.dates import YearLocator, MonthLocator, DayLocator,\
                              HourLocator, DateFormatter
-from mpl_toolkits.basemap import Basemap
 
 __author__ = 'huang.andrew12@gmail.com'
 __copyright__ = 'Andrew Huang'
@@ -353,14 +358,27 @@ def plot(
     return fig
 
 
-def global_map(
-              data, lat, lon, vmin, vmax,
-              title='Map',
-              show=False,
-              save=None,
-              proj='cyl',
-              center=16.50
-              ):
+def plot_map(
+             ax, data, lat, lon,
+             vmin, vmax,
+             data2=None,
+             lat2=None,
+             lon2=None,
+             lower_lat=-90,
+             upper_lat=90,
+             left_lon=-180,
+             right_lon=180,
+             projection=ccrs.PlateCarree(),
+             states=False,
+             lakes=True,
+             coastlines=True,
+             cmap=plt.cm.jet,
+             contour=None,
+             contour2=None,
+             title='',
+             show=False,
+             save='',
+             ):
     """
     Wrapper of mpl_toolkits.basemap. Makes a map.
 
@@ -370,26 +388,57 @@ def global_map(
     :param: vmin (int) - lower limit of color bar
     :param: vmax (int) - upper limit of color bar
     :param: title (str) - main title
-    :param: show (boolean) - shows plot
     :param: save (str) - name of output file
-    :param: proj ('str') - abbrieviation of projection
+    :param: show (boolean) - shows plot
+    :param: proj (str) - abbrieviation of projection
     :param: center (int) - longitude where map will be centered
     :return: fig (matplotlib.figure) - map figure
     """
-    fig = plt.figure(figsize=(20, 15))
-    tmp_m = Basemap(projection=proj, lon_0=center)
-    tmp_m.drawcoastlines(linewidth=1.25, color="gray")
-    tmp_m.drawparallels(range(-80, 81, 20), labels=[1, 1, 0, 0])
-    tmp_m.drawmeridians(range(-180, 180, 60), labels=[0, 0, 0, 1])
-    im = tmp_m.pcolormesh(
-        lon, lat, data, cmap=plt.cm.jet, vmin=vmin, vmax=vmax)
-    tmp_m.colorbar(im, "bottom", size="5%", pad="10%")
-    plt.title("{}".format(title))
-    if save is not None:
-        plt.savefig("{}".format(save), bbox_inches='tight')
+    ax.set_extent([left_lon, right_lon, lower_lat, upper_lat], projection)
+    if states:
+        cfeature.NaturalEarthFeature(category='cultural',
+                                     name='admin_1_states_provinces_lines',
+                                     scale='10m', facecolor='none')
+    if lakes:
+        cfeature.NaturalEarthFeature(category='physical',
+                                     name='lakes',
+                                     scale='10m',
+                                     facecolor='none')
+    if coastlines:
+        ax.coastlines()
+    gl = ax.gridlines(crs=projection, draw_labels=True,
+                      linewidth=0.5, color='black', alpha=0.5, linestyle='--')
+    gl.xformatter = LONGITUDE_FORMATTER
+    gl.yformatter = LATITUDE_FORMATTER
+    gl.xlabels_top = False
+
+    im = ax.pcolormesh(lon, lat, data,
+                       cmap=cmap, vmin=vmin, vmax=vmax)
+    plt.colorbar(im)
+
+    if contour is not None:
+        im1 = ax.contour(lon2,
+                         lat2,
+                         data,
+                         contour, linewidths=1,
+                         colors='k', linestyles="solid")
+        plt.clabel(im1, fontsize=15, inline=1, fmt='%1.0f')
+
+    if contour2 is not None:
+        im2 = ax.contour(lon2,
+                         lat2,
+                         data,
+                         contour2, linewidths=1,
+                         colors='k', linestyles="dashed")
+        plt.clabel(im2, fontsize=15, inline=1, fmt='%1.0f')
+
+    ax.set_title(title)
+
+    if save != '':
+        plt.savefig(save)
+
     if show:
         plt.show()
-    return fig
 
 
 def prettify_plot(ax):
