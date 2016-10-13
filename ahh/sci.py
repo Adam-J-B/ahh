@@ -1,5 +1,4 @@
 import numpy as np
-from ext import get_idc
 
 __author__ = 'huang.andrew12@gmail.com'
 __copyright__ = 'Andrew Huang'
@@ -209,7 +208,7 @@ def get_avg(data, axis=(0),
         else:
             lat_start_idc = lats_idc.min()
             lat_end_idc = lats_idc.max()
-        if lons_idc is None
+        if lons_idc is None:
             lon_start_idc = 0
             lon_end_idc = data_shp[1]
         else:
@@ -234,7 +233,7 @@ def get_avg(data, axis=(0),
         else:
             lat_start_idc = lats_idc.min()
             lat_end_idc = lats_idc.max()
-        if lons_idc is None
+        if lons_idc is None:
             lon_start_idc = 0
             lon_end_idc = data_shp[2]
         else:
@@ -255,7 +254,7 @@ def get_avg(data, axis=(0),
             else:
                 time_start_idc = times_idc.min()
                 time_end_idc = times_idc.max()
-            if lvls_idc is None
+            if lvls_idc is None:
                 lvl_start_idc = 0
                 lvl_end_idc = data_shp[1]
             else:
@@ -267,7 +266,7 @@ def get_avg(data, axis=(0),
             else:
                 lat_start_idc = lats_idc.min()
                 lat_end_idc = lats_idc.max()
-            if lons_idc is None
+            if lons_idc is None:
                 lon_start_idc = 0
                 lon_end_idc = data_shp[3]
             else:
@@ -299,7 +298,7 @@ def get_avg(data, axis=(0),
             else:
                 lon_start_idc = lons_idc.min()
                 lon_end_idc = lons_idc.max()
-            if lvls_idc is None
+            if lvls_idc is None:
                 lvl_start_idc = 0
                 lvl_end_idc = data_shp[3]
             else:
