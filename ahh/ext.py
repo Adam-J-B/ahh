@@ -546,6 +546,11 @@ def export_nc(lat, lon, var_list, name_list, units_list,
             fi_out_var = fi_out.createVariable(name, 'f4',
                                                (time_name, 'lat', 'lon'))
             fi_out_var.units = units
+            fi_out_var[:, :, :] = var
+        else:
+            fi_out_var = fi_out.createVariable(name, 'f4',
+                                               ('lat', 'lon'))
+            fi_out_var.units = units
             fi_out_var[:, :] = var
 
     fi_out.close()
