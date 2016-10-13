@@ -292,7 +292,7 @@ def get_avg(data, axis=(0),
             else:
                 lat_start_idc = lats_idc.min()
                 lat_end_idc = lats_idc.max()
-            if lons_idc is None
+            if lons_idc is None:
                 lon_start_idc = 0
                 lon_end_idc = data_shp[2]
             else:
