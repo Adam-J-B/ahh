@@ -400,8 +400,8 @@ def plot_map(
     """
     if setup_figsize is not None:
         fig = plt.figure(figsize=setup_figsize)
-    ax = plt.subplot(sp_rows, sp_cols, sp_pos, projection)
-    ax.set_extent([left_lon, right_lon, lower_lat, upper_lat], projection=projection)
+    ax = plt.subplot(sp_rows, sp_cols, sp_pos, projection=projection)
+    ax.set_extent([left_lon, right_lon, lower_lat, upper_lat], projection)
     if states:
         cfeature.NaturalEarthFeature(category='cultural',
                                      name='admin_1_states_provinces_lines',
