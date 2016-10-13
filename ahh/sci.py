@@ -165,7 +165,7 @@ def get_norm_anom(data_avg):
     """
     Finds the normalized anomaly of some averaged data
 
-    :param: data_avg (np.array) - average data values
+    :param: data_avg (np.ma.array) - average data values
     :return: data_anom (float) - normalized anomaly
     """
     data_std = np.std(data_avg)
@@ -186,9 +186,9 @@ def get_avg(data, axis=(0),
     data dimensions must be in these orders:
     lat, lon
     time, lat, lon
-    time, lat, lon, level OR time, level, lat, lon (if change_lvl_order)
+    time, level, lat, lon OR time, lat, lon, level (if change_lvl_order)
 
-    :param: data (np.array) - input data
+    :param: data (np.ma.array) - input data
     :param: axis (tuple) - axis to average over
     :param: times_idc (np.array) - time indices
     :param: lats_idc (np.array) - latitude indices
@@ -198,7 +198,6 @@ def get_avg(data, axis=(0),
     
     :return: avg (np.array) - average over given parameters
     """
-    data = np.array(data)
     data_shp = data.shape
 
     if len(data_shp) == 2:
@@ -254,38 +253,6 @@ def get_avg(data, axis=(0),
             else:
                 time_start_idc = times_idc.min()
                 time_end_idc = times_idc.max()
-            if lvls_idc is None:
-                lvl_start_idc = 0
-                lvl_end_idc = data_shp[1]
-            else:
-                lvl_start_idc = lvl_idc.min()
-                lvl_end_idc = lvl_idc.max()
-            if lats_idc is None:
-                lat_start_idc = 0
-                lat_end_idc = data_shp[2]
-            else:
-                lat_start_idc = lats_idc.min()
-                lat_end_idc = lats_idc.max()
-            if lons_idc is None:
-                lon_start_idc = 0
-                lon_end_idc = data_shp[3]
-            else:
-                lon_start_idc = lons_idc.min()
-                lon_end_idc = lons_idc.max()
-            return np.ma.average(data[
-                                   time_start_idc:time_end_idc,
-                                   lvl_start_idc:lvl_end_idc,
-                                   lat_start_idc:lat_end_idc,
-                                   lon_start_idc:lon_end_idc,
-                                   ],
-                              axis=axis)
-        else:
-            if times_idc is None:
-                time_start_idc = 0
-                time_end_idc = data_shp[0]
-            else:
-                time_start_idc = times_idc.min()
-                time_end_idc = times_idc.max()
             if lats_idc is None:
                 lat_start_idc = 0
                 lat_end_idc = data_shp[1]
@@ -309,5 +276,37 @@ def get_avg(data, axis=(0),
                                    lat_start_idc:lat_end_idc,
                                    lon_start_idc:lon_end_idc,
                                    lvl_start_idc:lvl_end_idc,
+                                   ],
+                              axis=axis)
+        else:
+            if times_idc is None:
+                time_start_idc = 0
+                time_end_idc = data_shp[0]
+            else:
+                time_start_idc = times_idc.min()
+                time_end_idc = times_idc.max()
+            if lvls_idc is None:
+                lvl_start_idc = 0
+                lvl_end_idc = data_shp[1]
+            else:
+                lvl_start_idc = lvl_idc.min()
+                lvl_end_idc = lvl_idc.max()
+            if lats_idc is None:
+                lat_start_idc = 0
+                lat_end_idc = data_shp[2]
+            else:
+                lat_start_idc = lats_idc.min()
+                lat_end_idc = lats_idc.max()
+            if lons_idc is None:
+                lon_start_idc = 0
+                lon_end_idc = data_shp[3]
+            else:
+                lon_start_idc = lons_idc.min()
+                lon_end_idc = lons_idc.max()
+            return np.ma.average(data[
+                                   time_start_idc:time_end_idc,
+                                   lvl_start_idc:lvl_end_idc,
+                                   lat_start_idc:lat_end_idc,
+                                   lon_start_idc:lon_end_idc,
                                    ],
                               axis=axis)
