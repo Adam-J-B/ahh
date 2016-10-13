@@ -400,7 +400,7 @@ def plot_map(
     """
     if setup_figsize is not None:
         fig = plt.figure(figsize=setup_figsize)
-    ax.plt.subplot(sp_rows, sp_cols, sp_pos)
+    ax = plt.subplot(sp_rows, sp_cols, sp_pos)
     ax.set_extent([left_lon, right_lon, lower_lat, upper_lat], projection)
     if states:
         cfeature.NaturalEarthFeature(category='cultural',
