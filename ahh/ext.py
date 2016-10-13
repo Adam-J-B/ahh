@@ -242,8 +242,8 @@ def get_idc(lats,
     """
     Finds the indices for given latitudes and longitudes boundary.
 
-    :param: lats (list) - array of latitudes
-    :param: lons (list) - array of longitudes
+    :param: lats (np.array) - array of latitudes
+    :param: lons (np.array) - array of longitudes
     :param: lower_lat (float) - southern latitude boundary
     :param: upper_lat (float) - northern latitude boundary
     :param: left_lon (float) - western longitude boundary
@@ -295,6 +295,84 @@ def get_idc(lats,
 
     return lats_idc[0], lons_idc[0]
 
+def get_lvl_idc(lvls, lower_lvl, upper_lvl, maxmin=False):
+    """
+    Finds the level indices for given lower and upper boundary.
+
+    :param: lvls (np.array) - array of levels
+    :param: lower_lvl (float) - lower level boundary
+    :param: upper_lvl (float) - upper level boundary
+    :param: maxmin (boolean) - return only the max and min of level idc
+    :return: lvls_idc (np.array) - indices of levels
+    :return: lvl_start_idc, lvl_end_idc - (np.int64, np.int64)
+             the lowest and highest level indices
+    """
+    lvls = np.array(lvls)
+
+    lvls_idc = np.where(
+                         (lvls >= lower_lvl)
+                         &
+                         (lats <= upper_lvl)
+                         )
+
+    if len(lvls_idc) == 0:
+        print('Unable to find any lat indices within the range!')
+
+    if maxmin:
+        lvls_idc = lvls_idc[0].min(), lvls_idc[0].max()
+        lvl_start_idc = lvls_idc[0]
+        lvl_end_idc = lvls_idc[1]
+        return lvl_start_idc, lvl_end_idc
+
+    return lvls_idc[0]
+
+def get_time_idc(times, start_yr, end_yr,
+                 start_mth=1, end_mth=12,
+                 start_day=1, end_day=31,
+                 maxmin=False):
+    """
+    Finds the time indices for given start time and end time.
+
+    :param: times (np.array) - array of datetimes
+    :param: start_yr (float) - lower year boundary
+    :param: end_yr (float) - upper year boundary
+    :param: start_mth (float) - lower month boundary
+    :param: end_mth (float) - upper month boundary
+    :param: start_day (float) - lower day boundary
+    :param: end_day (float) - upper day boundary
+    :param: maxmin (boolean) - return only the max and min of time idc
+    :return: times_idc (np.array) - indices of times
+    :return: time_start_idc, time_end_idc - (np.int64, np.int64)
+             the lowest and highest time indices
+    """
+    times = np.array(times)
+
+    start_dt = datetime.datetime(start_yr, start_mth, start_day)
+    for i in range(0,4):
+        try:
+            end_dt = datetime.datetime(end_yr, end_mth, end_day)
+            break
+        except Exception as e:
+            end_day -= 1
+            print('Unable to create end datetime, changing end day to {}!'
+                  .format(end_day))
+
+    times_idc = np.where(
+                         (times >= start_dt)
+                         &
+                         (times <= end_dt)
+                         )
+
+    if len(times_idc) == 0:
+        print('Unable to find any times indices within the range!')
+
+    if maxmin:
+        times_idc = times_idc[0].min(), times_idc[0].max()
+        time_start_idc = times_idc[0]
+        time_end_idc = times_idc[1]
+        return time_start_idc, time_end_idc
+
+    return times_idc[0]
 
 def read_nc(file_path,
             lat='lat',
