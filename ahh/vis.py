@@ -374,9 +374,9 @@ def plot_map(
              right_lon=180,
              projection=ccrs.PlateCarree(),
              states=False,
-             lakes=True,
+             lakes=False,
              coastlines=True,
-             cmap=plt.cm.jet,
+             cmap='gist_earth_r',
              contour=None,
              contour2=None,
              title='',
@@ -384,33 +384,52 @@ def plot_map(
              save='',
              ):
     """
-    Wrapper of mpl_toolkits.basemap. Makes a map.
+    Makes a map.
 
     :param: data (np.array) - data to be mapped
     :param: lat (np.array) - array of latitudes
     :param: lon (np.array) - array of longitudes
     :param: vmin (int) - lower limit of color bar
     :param: vmax (int) - upper limit of color bar
+    :param: sp_rows (int) - subplot rows
+    :param: sp_cols (int) - subplot columns
+    :param: sp_pos (int) - subplot position
+    :param: data2 (np.array) - contour data to be mapped
+    :param: lat2 (np.array) - array of contour latitudes
+    :param: lon2 (np.array) - array of contour longitudes
+    :param: lower_lat (int) - lower latitude boundary
+    :param: upper_lat (int) - upper latitude boundary
+    :param: left_lon (int) - left latitude boundary
+    :param: right_lon (int) - right latitude boundary
+    :param: projection (ccrs) - map projection
+    :param: states (boolean) - display states boundary
+    :param: lakes (boolean) - display lakes boundary
+    :param: coastlines (boolean) - display coastlines
+    :param: cmap (str) - color map
+    :param: contour (list) - list of positive values to contour
+    :param: contour2 (list) - list of negative values to contour
     :param: title (str) - main title
     :param: save (str) - name of output file
     :param: show (boolean) - shows plot
-    :param: proj (str) - abbrieviation of projection
-    :param: center (int) - longitude where map will be centered
-    :return: fig (matplotlib.figure) - map figure
+    :return: fig, ax (matplotlib.figure, matplotlib.ax) - map figure and axis
     """
     if setup_figsize is not None:
         fig = plt.figure(figsize=setup_figsize)
     ax = plt.subplot(sp_rows, sp_cols, sp_pos, projection=projection)
     ax.set_extent([left_lon, right_lon, lower_lat, upper_lat], projection)
     if states:
-        cfeature.NaturalEarthFeature(category='cultural',
-                                     name='admin_1_states_provinces_lines',
-                                     scale='10m', facecolor='none')
+        feature_name = 'admin_1_states_provinces_lines'
+        states_provinces = cfeature.NaturalEarthFeature(category='cultural',
+                                                        name=feature_name,
+                                                        scale='10m',
+                                                        facecolor='none')
+        ax.add_feature(states_provinces, edgecolor='black')
     if lakes:
-        cfeature.NaturalEarthFeature(category='physical',
-                                     name='lakes',
-                                     scale='10m',
-                                     facecolor='none')
+        lakes = cfeature.NaturalEarthFeature(category='physical',
+                                             name='lakes',
+                                             scale='10m',
+                                             facecolor='none')
+        ax.add_feature(lakes, edgecolor='black', lw=1)
     if coastlines:
         ax.coastlines()
     gl = ax.gridlines(crs=projection, draw_labels=True,
@@ -426,7 +445,7 @@ def plot_map(
     if contour is not None:
         im1 = ax.contour(lon2,
                          lat2,
-                         data,
+                         data2 / 100,
                          contour, linewidths=1,
                          colors='k', linestyles="solid")
         plt.clabel(im1, fontsize=15, inline=1, fmt='%1.0f')
@@ -434,9 +453,9 @@ def plot_map(
     if contour2 is not None:
         im2 = ax.contour(lon2,
                          lat2,
-                         data,
-                         contour2, linewidths=1,
-                         colors='k', linestyles="dashed")
+                         data2 / 100,
+                         contour, linewidths=1,
+                         colors='k', linestyles="solid")
         plt.clabel(im2, fontsize=15, inline=1, fmt='%1.0f')
 
     ax.set_title(title)
@@ -446,6 +465,8 @@ def plot_map(
 
     if show:
         plt.show()
+
+    return fig, ax
 
 
 def prettify_plot(ax):
