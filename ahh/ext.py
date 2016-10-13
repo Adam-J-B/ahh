@@ -1,6 +1,8 @@
 import numpy as np
 import pandas as pd
 from netCDF4 import Dataset, num2date
+from geopy.distance import great_circle
+from operator import itemgetter
 import datetime
 import calendar
 import os
@@ -55,9 +57,10 @@ def ahh(variable,
         variable = np.array(variable)
         try:
             len_of_var = len(variable)
+            center_of_var = len(variable)/2
         except:
             len_of_var = None
-        center_of_var = len(variable)/2
+            center_of_var = None
         type_of_var = type(variable)
         type_of_var2 = None
         shape_of_var = None
@@ -92,13 +95,16 @@ def ahh(variable,
         except:
             print('Unable to get the max/min values!')
 
-        if 'Masked' in str(type_of_var):
-            variable = variable[~variable.mask]
-            center_of_var = len(variable)/2
-            print('')
-            print('This array has been temporarily reshaped to 1D to show')
-            print('only non-masked values. Therefore, if you are printing out')
-            print('the center, it may show an anomalously large indice!')
+        try:
+            if 'Masked' in str(type_of_var):
+                variable = variable[~variable.mask]
+                center_of_var = len(variable)/2
+                print('')
+                print('This array has been temporarily reshaped to 1D to show')
+                print('only non-masked values. Therefore, if you are printing out')
+                print('the center, it may show an anomalously large indice!')
+        except:
+            pass
 
         try:
             type_of_var2 = type(variable.flatten()[0])
@@ -196,7 +202,7 @@ def p(num=1):
     print('\n######## MARK {} ########\n'.format(num))
 
 
-def lonw2e(lon, array=False, reverse=False):
+def lonw2e(lon, reverse=False):
     """
     Converts a west longitude to east longitude, can also do in reverse.
     :param: lon (int) - a west longitude
@@ -205,7 +211,7 @@ def lonw2e(lon, array=False, reverse=False):
     :return: translated_lon (int) - translated longitude
     """
     if not reverse:
-        if array:
+        if len(lon) > 1:
             translated_lon = np.array(lon)
             west_lon_idc = np.where(translated_lon < 0)
             translated_lon[west_lon_idc] += 360
@@ -216,7 +222,7 @@ def lonw2e(lon, array=False, reverse=False):
                 print('Input lon, {}, is already in east coordinates!'
                       .format(lon))
     else:
-        if array:
+        if len(lon) > 1:
             translated_lon = np.array(lon)
             west_lon_idc = np.where(translated_lon > 180)
             translated_lon[west_lon_idc] -= 360
@@ -336,21 +342,19 @@ def get_time_idc(times, start_yr, end_yr,
     Finds the time indices for given start time and end time.
 
     :param: times (np.array) - array of datetimes
-    :param: start_yr (float) - lower year boundary
-    :param: end_yr (float) - upper year boundary
-    :param: start_mth (float) - lower month boundary
-    :param: end_mth (float) - upper month boundary
-    :param: start_day (float) - lower day boundary
-    :param: end_day (float) - upper day boundary
+    :param: start_yr (int) - lower year boundary
+    :param: end_yr (int) - upper year boundary
+    :param: start_mth (int) - lower month boundary
+    :param: end_mth (int) - upper month boundary
+    :param: start_day (int) - lower day boundary
+    :param: end_day (int) - upper day boundary
     :param: maxmin (boolean) - return only the max and min of time idc
     :return: times_idc (np.array) - indices of times
     :return: time_start_idc, time_end_idc - (np.int64, np.int64)
              the lowest and highest time indices
     """
-    times = np.array(times)
-
     start_dt = datetime.datetime(start_yr, start_mth, start_day)
-    for i in range(0, 4):
+    while True:
         try:
             end_dt = datetime.datetime(end_yr, end_mth, end_day)
             break
@@ -378,6 +382,19 @@ def get_time_idc(times, start_yr, end_yr,
 
     return times_idc[0]
 
+
+def get_closest(data, target_val, type_var='typical'):
+    if type_var == 'typical':
+        diff = np.abs(np.array(data) - target_val)
+        closest_val_idc = min(enumerate(diff), key=itemgetter(1))[0]
+        return data[closest_val_idc], closest_val_idc
+    if type_var == 'datetime':
+        closest_val = min(data, key=lambda d: abs(d - target_val))
+        closest_val_idc = np.where(data == closest_val)[0]
+        if len(closest_val_idc) == 0:
+            data = np.ma.array(data)
+            closest_val_idc = np.where(data == closest_val)[0]
+        return closest_val, closest_val_idc
 
 def read_nc(file_path,
             lat='lat',
@@ -614,3 +631,8 @@ def dtnow():
     :return: utcnow (datetime.datetime) - UTC now in datetime
     """
     return datetime.datetime.utcnow()
+
+def clockit(start, n=''):
+    print(n)
+    print(datetime.datetime.utcnow() - start)
+    print('')
