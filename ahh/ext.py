@@ -295,6 +295,7 @@ def get_idc(lats,
 
     return lats_idc[0], lons_idc[0]
 
+
 def get_lvl_idc(lvls, lower_lvl, upper_lvl, maxmin=False):
     """
     Finds the level indices for given lower and upper boundary.
@@ -312,7 +313,7 @@ def get_lvl_idc(lvls, lower_lvl, upper_lvl, maxmin=False):
     lvls_idc = np.where(
                          (lvls >= lower_lvl)
                          &
-                         (lats <= upper_lvl)
+                         (lvls <= upper_lvl)
                          )
 
     if len(lvls_idc) == 0:
@@ -325,6 +326,7 @@ def get_lvl_idc(lvls, lower_lvl, upper_lvl, maxmin=False):
         return lvl_start_idc, lvl_end_idc
 
     return lvls_idc[0]
+
 
 def get_time_idc(times, start_yr, end_yr,
                  start_mth=1, end_mth=12,
@@ -348,13 +350,15 @@ def get_time_idc(times, start_yr, end_yr,
     times = np.array(times)
 
     start_dt = datetime.datetime(start_yr, start_mth, start_day)
-    for i in range(0,4):
+    for i in range(0, 4):
         try:
             end_dt = datetime.datetime(end_yr, end_mth, end_day)
             break
         except Exception as e:
             end_day -= 1
-            print('Unable to create end datetime, changing end day to {}!'
+            print('Unable to create end datetime due to this error\n{}'
+                  .format(e))
+            print('Changing end day to {}!'
                   .format(end_day))
 
     times_idc = np.where(
@@ -373,6 +377,7 @@ def get_time_idc(times, start_yr, end_yr,
         return time_start_idc, time_end_idc
 
     return times_idc[0]
+
 
 def read_nc(file_path,
             lat='lat',

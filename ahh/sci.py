@@ -195,7 +195,7 @@ def get_avg(data, axis=(0),
     :param: lons_idc (np.array) - longitude indices
     :param: lvls_idc (float) - level indices
     :param: change_lvl_order (boolean) - changes order of level dimension
-    
+
     :return: avg (np.array) - average over given parameters
     """
     data_shp = data.shape
@@ -217,7 +217,7 @@ def get_avg(data, axis=(0),
                                lat_start_idc:lat_end_idc,
                                lon_start_idc:lon_end_idc
                                ],
-                          axis=axis)
+                             axis=axis)
 
     if len(data_shp) == 3:
         if times_idc is None:
@@ -243,7 +243,7 @@ def get_avg(data, axis=(0),
                                lat_start_idc:lat_end_idc,
                                lon_start_idc:lon_end_idc
                                ],
-                          axis=axis)
+                             axis=axis)
 
     if len(data_shp) == 4:
         if change_lvl_order:
@@ -269,15 +269,15 @@ def get_avg(data, axis=(0),
                 lvl_start_idc = 0
                 lvl_end_idc = data_shp[3]
             else:
-                lvl_start_idc = lvl_idc.min()
-                lvl_end_idc = lvl_idc.max()
+                lvl_start_idc = lvls_idc.min()
+                lvl_end_idc = lvls_idc.max()
             return np.ma.average(data[
                                    time_start_idc:time_end_idc,
                                    lat_start_idc:lat_end_idc,
                                    lon_start_idc:lon_end_idc,
                                    lvl_start_idc:lvl_end_idc,
                                    ],
-                              axis=axis)
+                                 axis=axis)
         else:
             if times_idc is None:
                 time_start_idc = 0
@@ -289,8 +289,8 @@ def get_avg(data, axis=(0),
                 lvl_start_idc = 0
                 lvl_end_idc = data_shp[1]
             else:
-                lvl_start_idc = lvl_idc.min()
-                lvl_end_idc = lvl_idc.max()
+                lvl_start_idc = lvls_idc.min()
+                lvl_end_idc = lvls_idc.max()
             if lats_idc is None:
                 lat_start_idc = 0
                 lat_end_idc = data_shp[2]
@@ -309,4 +309,4 @@ def get_avg(data, axis=(0),
                                    lat_start_idc:lat_end_idc,
                                    lon_start_idc:lon_end_idc,
                                    ],
-                              axis=axis)
+                                 axis=axis)
