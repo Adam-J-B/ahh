@@ -359,8 +359,12 @@ def plot(
 
 
 def plot_map(
-             ax, data, lat, lon,
+             data, lat, lon,
              vmin, vmax,
+             setup_figsize=None,
+             sp_rows=1,
+             sp_cols=1,
+             sp_pos=1,
              data2=None,
              lat2=None,
              lon2=None,
@@ -394,6 +398,9 @@ def plot_map(
     :param: center (int) - longitude where map will be centered
     :return: fig (matplotlib.figure) - map figure
     """
+    if setup_figsize is not None:
+        fig = plt.figure(figsize=setup_figsize)
+    ax.plt.subplot(sp_rows, sp_cols, sp_pos)
     ax.set_extent([left_lon, right_lon, lower_lat, upper_lat], projection)
     if states:
         cfeature.NaturalEarthFeature(category='cultural',
