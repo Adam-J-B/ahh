@@ -115,12 +115,12 @@ def get_idc(lats,
             right_lon,
             maxmin=False,
             w2e=False,
-            e2w=True):
+            e2w=False):
     """
     Finds the indices for given latitudes and longitudes boundary.
 
-    :param: lats (list) - array of latitudes
-    :param: lons (list) - array of longitudes
+    :param: lats (np.array) - array of latitudes
+    :param: lons (np.array) - array of longitudes
     :param: lower_lat (float) - southern latitude boundary
     :param: upper_lat (float) - northern latitude boundary
     :param: left_lon (float) - western longitude boundary
@@ -132,6 +132,53 @@ def get_idc(lats,
     :return: lat_start_idc, lat_end_idc, lon_start_idc, lon_end_idc -
              (np.int64, np.int64, np.int64, np.int64)
              the lowest and highest lat/lon indices
+    """
+
+
+def get_lvl_idc(lvls, lower_lvl, upper_lvl, maxmin=False):
+    """
+    Finds the level indices for given lower and upper boundary.
+
+    :param: lvls (np.array) - array of levels
+    :param: lower_lvl (float) - lower level boundary
+    :param: upper_lvl (float) - upper level boundary
+    :param: maxmin (boolean) - return only the max and min of level idc
+    :return: lvls_idc (np.array) - indices of levels
+    :return: lvl_start_idc, lvl_end_idc - (np.int64, np.int64)
+             the lowest and highest level indices
+    """
+
+
+def get_time_idc(times, start_yr, end_yr,
+                 start_mth=1, end_mth=12,
+                 start_day=1, end_day=31,
+                 maxmin=False):
+    """
+    Finds the time indices for given start time and end time.
+
+    :param: times (np.array) - array of datetimes
+    :param: start_yr (int) - lower year boundary
+    :param: end_yr (int) - upper year boundary
+    :param: start_mth (int) - lower month boundary
+    :param: end_mth (int) - upper month boundary
+    :param: start_day (int) - lower day boundary
+    :param: end_day (int) - upper day boundary
+    :param: maxmin (boolean) - return only the max and min of time idc
+    :return: times_idc (np.array) - indices of times
+    :return: time_start_idc, time_end_idc - (np.int64, np.int64)
+             the lowest and highest time indices
+    """
+
+
+def get_closest(data, target_val, type_var='typical'):
+    """
+    Get the closest value and index to target value.
+    :param: data (np.array) - data
+    :param: target_val (float/datetime.datetime) - target value
+    :param: type_var (str) - typical (float) or datetime (datetime.datetime)
+
+    :return: closest_val, closest_val_idc (datetime.datetime/float, int) -
+             the closest value to target value and the index of that
     """
 
 
@@ -230,6 +277,15 @@ def dtnow():
     """
 
 
+def clockit(start, n=''):
+    """
+    Print out elapsed time since start.
+
+    :param: start (datetime.datetime) - start datetime
+    :param: n (str) - label/description
+    """
+
+
 ##############################################################################
 ### sci.py ###################################################################
 ##############################################################################
@@ -295,8 +351,33 @@ def get_norm_anom(data_avg):
     """
     Finds the normalized anomaly of some averaged data
 
-    :param: data_avg (np.array) - average data values
+    :param: data_avg (np.ma.array) - average data values
     :return: data_anom (float) - normalized anomaly
+    """
+
+
+def get_avg(data, axis=(0),
+            times_idc=None,
+            lats_idc=None,
+            lons_idc=None,
+            lvls_idc=None,
+            change_lvl_order=False):
+    """
+    Finds the areal and/or time average and/or level, but first,
+    data dimensions must be in these orders:
+    lat, lon
+    time, lat, lon
+    time, level, lat, lon OR time, lat, lon, level (if change_lvl_order)
+
+    :param: data (np.ma.array) - input data
+    :param: axis (tuple) - axis to average over
+    :param: times_idc (np.array) - time indices
+    :param: lats_idc (np.array) - latitude indices
+    :param: lons_idc (np.array) - longitude indices
+    :param: lvls_idc (float) - level indices
+    :param: change_lvl_order (boolean) - changes order of level dimension
+
+    :return: avg (np.array) - average over given parameters
     """
 
 
@@ -386,28 +467,60 @@ def plot(
     """
 
 
-def global_map(
-              data, lat, lon, vmin, vmax,
-              title='Map',
-              show=False,
-              save=None,
-              proj='cyl',
-              center=16.50
-              ):
+def plot_map(
+             data, lat, lon,
+             vmin, vmax,
+             setup_figsize=None,
+             sp_rows=1,
+             sp_cols=1,
+             sp_pos=1,
+             data2=None,
+             lat2=None,
+             lon2=None,
+             lower_lat=-90,
+             upper_lat=90,
+             left_lon=-180,
+             right_lon=180,
+             projection=ccrs.PlateCarree(),
+             states=False,
+             lakes=False,
+             coastlines=True,
+             cmap='gist_earth_r',
+             contour=None,
+             contour2=None,
+             title='',
+             show=False,
+             save='',
+             ):
     """
-    Wrapper of mpl_toolkits.basemap. Makes a map.
+    Makes a map.
 
     :param: data (np.array) - data to be mapped
     :param: lat (np.array) - array of latitudes
     :param: lon (np.array) - array of longitudes
     :param: vmin (int) - lower limit of color bar
     :param: vmax (int) - upper limit of color bar
+    :param: sp_rows (int) - subplot rows
+    :param: sp_cols (int) - subplot columns
+    :param: sp_pos (int) - subplot position
+    :param: data2 (np.array) - contour data to be mapped
+    :param: lat2 (np.array) - array of contour latitudes
+    :param: lon2 (np.array) - array of contour longitudes
+    :param: lower_lat (int) - lower latitude boundary
+    :param: upper_lat (int) - upper latitude boundary
+    :param: left_lon (int) - left latitude boundary
+    :param: right_lon (int) - right latitude boundary
+    :param: projection (ccrs) - map projection
+    :param: states (boolean) - display states boundary
+    :param: lakes (boolean) - display lakes boundary
+    :param: coastlines (boolean) - display coastlines
+    :param: cmap (str) - color map
+    :param: contour (list) - list of positive values to contour
+    :param: contour2 (list) - list of negative values to contour
     :param: title (str) - main title
-    :param: show (boolean) - shows plot
     :param: save (str) - name of output file
-    :param: proj ('str') - abbrieviation of projection
-    :param: center (int) - longitude where map will be centered
-    :return: fig (matplotlib.figure) - map figure
+    :param: show (boolean) - shows plot
+    :return: fig, ax (matplotlib.figure, matplotlib.ax) - map figure and axis
     """
 
 

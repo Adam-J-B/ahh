@@ -47,6 +47,7 @@ Basically don't hold me accountable if something goes wrong; go read the license
         - meters per second to miles per hour
         - All that in reverse
     - get_norm_anom: get the normalized anomaly of array
+    - get_avg: get average over specified indices and axis
 
 ### ahh/ext.py - extra functions:
     - ahh: prints out a variable summary
@@ -62,6 +63,9 @@ Basically don't hold me accountable if something goes wrong; go read the license
     - get_idc: get the indices for bounding latitudes and longitudes
         - option return only the max and min
         - option to convert input west longitudes to east or vice versa
+    - get_lvl_idc: get the indices for bounding levels
+    - get_time_idc: get the indices for bounding times
+    - get_closest: get closest value and index
     - read_nc: read netCDF4 file
         - grabs the opened dataset, time, latitude, and longitude arrays
     -export_nc: export netCDF file
@@ -71,6 +75,7 @@ Basically don't hold me accountable if something goes wrong; go read the license
     - dt2jul: convert datetime to Kulian day
     - jul2dt: convert Julian day to datetime
     - dtnow: get the utc datetime now
+    - clockit: input the earlier time and return time since
 
 ### vis.py - visualization functions:
     - plot: effortlessly make beautiful plots
@@ -80,13 +85,22 @@ Basically don't hold me accountable if something goes wrong; go read the license
         - can share x/y-axis,
         - can limit x/y-axis
         - datetimes supported for x-axis
-    - global_map: map out data
+    - global_map: make a map
     - prettify_plot: effortlessly make your own plot pretty
     - set_labels: set and prettify x and y labels
         - may also set title
     - set_legend: create a legend
 
 ## CHANGELOG:
+### - v0.1.0
+    - Enhanced ext.ahh() to handle 0 length variables
+    - Lessened the inputs in ext.lonw2e()
+    - Added ext.get_lvl_idc(), ext.get_time_idc(), ext.get_closest()
+    - Fixed bug in ext.export_nc()
+    - Added ext.clockit() to time your code easily!
+    - Added sci.get_avg() to handle all your averaging needs
+    - Replaced vis.global_map() with vis.plot_map() that uses Cartopy
+    - Modified in_depth_example.py and added map_example.py
 ### - v0.0.9
     - Exception handling for ext.ahh()
     - Added input to only read extras for ahh.read_nc()
@@ -150,8 +164,6 @@ Basically don't hold me accountable if something goes wrong; go read the license
 - Add scalability in vis.plot()
 - Remove clutter (if, else) from vis.plot()
 - Add more plots functionality in vis.plot()
-- Put more work into vis.global_map()
-- Replace basemap with cartopy
 - Input latitudes and longitudes and locate those values into ahh
 - Possibly add read csv capabilities?
 - Update sci functions to be more flexible and reflect new changes
@@ -159,6 +171,7 @@ Basically don't hold me accountable if something goes wrong; go read the license
 - Write new example usage for new functions
 - Export netcdf to specific directory
 - Optimize functions
+- Improve visual of vis.plot_map()
 
 ## KNOWN ISSUES:
 - vis.plot() "minor" input is useable, but returns inconsistent font and color

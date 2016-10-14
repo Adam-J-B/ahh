@@ -1,5 +1,4 @@
 from ahh import pre, ext, sci, vis
-import numpy as np
 import os
 
 __author__ = 'huang.andrew12@gmail.com'
@@ -106,8 +105,10 @@ ext.ahh(lats_idc, 'lats')
 ext.ahh(lons_idc, 'lons')
 
 # # Average over respective lat, lons
-ep_tavg_theta = sci.get_avg(theta, axis=(0,2,3), lats_idc=lats_idc, lons_idc=lons_idc)
-ep_tavg_salt = sci.get_avg(salt, axis=(0,2,3), lats_idc=lats_idc, lons_idc=lons_idc)
+ep_tavg_theta = sci.get_avg(theta, axis=(0, 2, 3),
+                            lats_idc=lats_idc, lons_idc=lons_idc)
+ep_tavg_salt = sci.get_avg(salt, axis=(0, 2, 3),
+                           lats_idc=lats_idc, lons_idc=lons_idc)
 
 # # Convert Celsius to Fahrenheit for Americans
 ep_tavg_theta_f = sci.convert(ep_tavg_theta, c2f=True)

@@ -1,7 +1,6 @@
 import numpy as np
 import pandas as pd
 from netCDF4 import Dataset, num2date
-from geopy.distance import great_circle
 from operator import itemgetter
 import datetime
 import calendar
@@ -384,6 +383,15 @@ def get_time_idc(times, start_yr, end_yr,
 
 
 def get_closest(data, target_val, type_var='typical'):
+    """
+    Get the closest value and index to target value.
+    :param: data (np.array) - data
+    :param: target_val (float/datetime.datetime) - target value
+    :param: type_var (str) - typical (float) or datetime (datetime.datetime)
+
+    :return: closest_val, closest_val_idc (datetime.datetime/float, int) -
+             the closest value to target value and the index of that
+    """
     if type_var == 'typical':
         diff = np.abs(np.array(data) - target_val)
         closest_val_idc = min(enumerate(diff), key=itemgetter(1))[0]
@@ -633,6 +641,12 @@ def dtnow():
     return datetime.datetime.utcnow()
 
 def clockit(start, n=''):
+    """
+    Print out elapsed time since start.
+
+    :param: start (datetime.datetime) - start datetime
+    :param: n (str) - label/description
+    """
     print(n)
     print(datetime.datetime.utcnow() - start)
     print('')
