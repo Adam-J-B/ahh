@@ -1,5 +1,4 @@
 from ahh import pre, ext, sci, vis
-import numpy as np
 import os
 
 __author__ = 'huang.andrew12@gmail.com'
@@ -87,8 +86,7 @@ time, lat, lon, depth, theta = ext.read_nc(output_theta_fp,
 # # Since these are from the same distributor, we will assume lat, lon, depth
 # # are the same in both files so we don't waste memory
 output_salt_fp = os.path.join(full_dir, output_salt)
-_, _, _, salt = ext.read_nc(output_salt_fp,
-                            extra='SALT')
+salt = ext.read_nc(output_salt_fp, extra='SALT', already=True)
 
 # # Do a quick check if it was read in correctly.
 ext.ahh(theta, n='theta')
@@ -98,35 +96,25 @@ ext.ahh(salt, n='salt')
 # # Remember, -130 < -115!
 ep = [15, 30, -130, -115]
 
-# # Get the max min lat and lon indices.
 # # Since the dataset's lat and lon is defined in east longitude,
 # # set w2e (west to east) to True.
-lat_start, lat_end, lon_start, lon_end = \
-    ext.get_idc(lat, lon, ep[0], ep[1], ep[2], ep[3], maxmin=True, w2e=True)
+lats_idc, lons_idc = \
+    ext.get_idc(lat, lon, ep[0], ep[1], ep[2], ep[3], w2e=True)
 
-# # Average over time first (axis 0) Careful though! It's masked so use np.ma
-tavg_theta = np.ma.average(theta, axis=0)
-tavg_salt = np.ma.average(salt, axis=0)
+ext.ahh(lats_idc, 'lats')
+ext.ahh(lons_idc, 'lons')
 
-# # Do another quick check
-ext.ahh(tavg_theta, n='tavg_theta')
-ext.ahh(tavg_salt, n='tavg_salt')
-
-# # Average over lat (new axis 1)
-lat_tavg_theta = np.ma.average(tavg_theta, axis=1)
-lat_tavg_salt = np.ma.average(tavg_salt, axis=1)
-
-# # Average over lon (new axis 1)
-ep_tavg_theta = np.ma.average(lat_tavg_theta, axis=1)
-ep_tavg_salt = np.ma.average(lat_tavg_salt, axis=1)
-
-# # Final check!
-ext.ahh(ep_tavg_theta, n='ep_tavg_theta')
-ext.ahh(ep_tavg_salt, n='ep_tavg_salt')
+# # Average over respective lat, lons
+ep_tavg_theta = sci.get_avg(theta, axis=(0, 2, 3),
+                            lats_idc=lats_idc, lons_idc=lons_idc)
+ep_tavg_salt = sci.get_avg(salt, axis=(0, 2, 3),
+                           lats_idc=lats_idc, lons_idc=lons_idc)
 
 # # Convert Celsius to Fahrenheit for Americans
 ep_tavg_theta_f = sci.convert(ep_tavg_theta, c2f=True)
-print(ep_tavg_theta, ep_tavg_theta_f)
+
+ext.ahh(ep_tavg_theta_f, 'gah')
+ext.ahh(ep_tavg_salt, 'meh')
 
 # # Two methods of plotting: same axes or subplots
 vis.plot(depth, ep_tavg_theta_f,

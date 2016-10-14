@@ -1,9 +1,14 @@
+import cartopy.crs as ccrs
+import cartopy.feature as cfeature
+from cartopy.mpl.gridliner import (
+                                  LONGITUDE_FORMATTER,
+                                  LATITUDE_FORMATTER
+                                  )
 import matplotlib
 matplotlib.use('agg')
 import matplotlib.pyplot as plt
 from matplotlib.dates import YearLocator, MonthLocator, DayLocator,\
                              HourLocator, DateFormatter
-from mpl_toolkits.basemap import Basemap
 
 __author__ = 'huang.andrew12@gmail.com'
 __copyright__ = 'Andrew Huang'
@@ -353,43 +358,115 @@ def plot(
     return fig
 
 
-def global_map(
-              data, lat, lon, vmin, vmax,
-              title='Map',
-              show=False,
-              save=None,
-              proj='cyl',
-              center=16.50
-              ):
+def plot_map(
+             data, lat, lon,
+             vmin, vmax,
+             setup_figsize=None,
+             sp_rows=1,
+             sp_cols=1,
+             sp_pos=1,
+             data2=None,
+             lat2=None,
+             lon2=None,
+             lower_lat=-90,
+             upper_lat=90,
+             left_lon=-180,
+             right_lon=180,
+             projection=ccrs.PlateCarree(),
+             states=False,
+             lakes=False,
+             coastlines=True,
+             cmap='gist_earth_r',
+             contour=None,
+             contour2=None,
+             title='',
+             show=False,
+             save='',
+             ):
     """
-    Wrapper of mpl_toolkits.basemap. Makes a map.
+    Makes a map.
 
     :param: data (np.array) - data to be mapped
     :param: lat (np.array) - array of latitudes
     :param: lon (np.array) - array of longitudes
     :param: vmin (int) - lower limit of color bar
     :param: vmax (int) - upper limit of color bar
+    :param: sp_rows (int) - subplot rows
+    :param: sp_cols (int) - subplot columns
+    :param: sp_pos (int) - subplot position
+    :param: data2 (np.array) - contour data to be mapped
+    :param: lat2 (np.array) - array of contour latitudes
+    :param: lon2 (np.array) - array of contour longitudes
+    :param: lower_lat (int) - lower latitude boundary
+    :param: upper_lat (int) - upper latitude boundary
+    :param: left_lon (int) - left latitude boundary
+    :param: right_lon (int) - right latitude boundary
+    :param: projection (ccrs) - map projection
+    :param: states (boolean) - display states boundary
+    :param: lakes (boolean) - display lakes boundary
+    :param: coastlines (boolean) - display coastlines
+    :param: cmap (str) - color map
+    :param: contour (list) - list of positive values to contour
+    :param: contour2 (list) - list of negative values to contour
     :param: title (str) - main title
-    :param: show (boolean) - shows plot
     :param: save (str) - name of output file
-    :param: proj ('str') - abbrieviation of projection
-    :param: center (int) - longitude where map will be centered
-    :return: fig (matplotlib.figure) - map figure
+    :param: show (boolean) - shows plot
+    :return: fig, ax (matplotlib.figure, matplotlib.ax) - map figure and axis
     """
-    fig = plt.figure(figsize=(20, 15))
-    tmp_m = Basemap(projection=proj, lon_0=center)
-    tmp_m.drawcoastlines(linewidth=1.25, color="gray")
-    tmp_m.drawparallels(range(-80, 81, 20), labels=[1, 1, 0, 0])
-    tmp_m.drawmeridians(range(-180, 180, 60), labels=[0, 0, 0, 1])
-    im = tmp_m.pcolormesh(
-        lon, lat, data, cmap=plt.cm.jet, vmin=vmin, vmax=vmax)
-    tmp_m.colorbar(im, "bottom", size="5%", pad="10%")
-    plt.title("{}".format(title))
-    if save is not None:
-        plt.savefig("{}".format(save), bbox_inches='tight')
+    if setup_figsize is not None:
+        fig = plt.figure(figsize=setup_figsize)
+    ax = plt.subplot(sp_rows, sp_cols, sp_pos, projection=projection)
+    ax.set_extent([left_lon, right_lon, lower_lat, upper_lat], projection)
+    if states:
+        feature_name = 'admin_1_states_provinces_lines'
+        states_provinces = cfeature.NaturalEarthFeature(category='cultural',
+                                                        name=feature_name,
+                                                        scale='10m',
+                                                        facecolor='none')
+        ax.add_feature(states_provinces, edgecolor='black')
+    if lakes:
+        lakes = cfeature.NaturalEarthFeature(category='physical',
+                                             name='lakes',
+                                             scale='10m',
+                                             facecolor='none')
+        ax.add_feature(lakes, edgecolor='black', lw=1)
+    if coastlines:
+        ax.coastlines()
+    gl = ax.gridlines(crs=projection, draw_labels=True,
+                      linewidth=0.5, color='black', alpha=0.5, linestyle='--')
+    gl.xformatter = LONGITUDE_FORMATTER
+    gl.yformatter = LATITUDE_FORMATTER
+    gl.xlabels_top = False
+
+    im = ax.pcolormesh(lon, lat, data,
+                       cmap=cmap, vmin=vmin, vmax=vmax)
+    plt.colorbar(im)
+
+    if contour is not None:
+        im1 = ax.contour(lon2,
+                         lat2,
+                         data2 / 100,
+                         contour, linewidths=1,
+                         colors='k', linestyles="solid")
+        plt.clabel(im1, fontsize=15, inline=1, fmt='%1.0f')
+
+    if contour2 is not None:
+        im2 = ax.contour(lon2,
+                         lat2,
+                         data2 / 100,
+                         contour, linewidths=1,
+                         colors='k', linestyles="solid")
+        plt.clabel(im2, fontsize=15, inline=1, fmt='%1.0f')
+
+    ax.set_title(title)
+
+    if save != '':
+        plt.savefig(save)
+
     if show:
         plt.show()
-    return fig
+
+    return fig, ax
 
 
 def prettify_plot(ax):
